@@ -1,71 +1,56 @@
 "use client";
-import { useCreateDocumentMutation } from "@/store/features/document";
-import { Block, BlockNoteEditor, PartialBlock } from "@blocknote/core";
+
+import { useUpdatePage } from "@/app/routes/editor/hooks/useUpdatePage";
+import { Block } from "@blocknote/core";
 import "@blocknote/core/fonts/inter.css";
-import { BlockNoteView } from "@blocknote/react";
+import { BlockNoteView, useCreateBlockNote } from "@blocknote/react";
 import "@blocknote/react/style.css";
-import { useEffect, useMemo, useState } from "react";
-import { useSelector } from "react-redux";
+import { useSearchParams } from "next/navigation";
 
-async function saveToStorage(jsonBlocks: Block[]) {
-  // Save contents to local storage. You might want to debounce this or replace
-  // with a call to your API / database.
-  localStorage.setItem("editorContent", JSON.stringify(jsonBlocks));
-}
+function EditorTry() {
+  const searchParams = useSearchParams();
 
-async function loadFromStorage() {
-  // Gets the previously stored editor contents.
-  const storageString = localStorage.getItem("editorContent");
-  return storageString
-    ? (JSON.parse(storageString) as PartialBlock[])
-    : undefined;
-}
-
-export default function EditorTry() {
-  const [initialContent, setInitialContent] = useState<
-    PartialBlock[] | undefined | "loading"
-  >("loading");
-
-  const user = useSelector((state: any) => state?.auth.user.user);
-
-  console.log("user", user);
-
-  const [createDocuemnt, { data, error, isLoading }] =
-    useCreateDocumentMutation();
-
-  // Loads the previously stored editor contents.
-  useEffect(() => {
-    loadFromStorage().then((content) => {
-      setInitialContent(content);
-    });
-  }, []);
+  const { page, handleCreatePage, isPageLoading } = useUpdatePage(
+    searchParams.get("id") || ""
+  );
 
   const handleSubmit = async (payload: Block[]) => {
-    await createDocuemnt({ id: user._id, document: payload });
+    return handleCreatePage({
+      id: page?._id,
+      document: JSON.stringify(payload),
+    });
   };
 
-  // Creates a new editor instance.
-  // We use useMemo + createBlockNoteEditor instead of useCreateBlockNote so we
-  // can delay the creation of the editor until the initial content is loaded.
-  const editor = useMemo(() => {
-    if (initialContent === "loading") {
-      return undefined;
-    }
-    return BlockNoteEditor.create({ initialContent });
-  }, [initialContent]);
+  const editor = useCreateBlockNote(
+    {
+      initialContent: page?.document
+        ? JSON.parse(page?.document)
+        : [
+            {
+              id: "1",
+              type: "heading",
+              content: "Untitled Page",
+              props: { level: 1 },
+            },
+          ],
+    },
+    [page]
+  );
 
-  if (editor === undefined) {
+  if (isPageLoading) {
     return "Loading content...";
   }
 
-  // Renders the editor instance.
+  if (!page) {
+    return "Page not found in your library. Please create a new page.";
+  }
+
   return (
     <BlockNoteView
       editor={editor}
-      onChange={() => {
-        saveToStorage(editor.document);
-        handleSubmit(editor.document);
-      }}
+      onChange={() => handleSubmit(editor.document)}
     />
   );
 }
+
+export default EditorTry;

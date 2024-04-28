@@ -8,10 +8,13 @@ import {
 import RestorePageIcon from "@mui/icons-material/RestorePage";
 import { Modal } from "antd";
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import React, { use, useEffect, useMemo, useState } from "react";
 import { BsTrash } from "react-icons/bs";
 import { useDispatch, useSelector } from "react-redux";
 import ConfirmationDialog from "./confirmationDialog";
+import { useCurrentUserPages } from "@/app/routes/editor/hooks/useCurrentUserPages";
+import { useMakeTrashPage } from "@/app/routes/editor/hooks/useMakeTrashPage";
+import { useDeletePage } from "@/app/routes/editor/hooks/useDeletePage";
 
 interface DeletedDocument {
   _id: string;
@@ -22,6 +25,13 @@ const TrashWindow: React.FC = () => {
   const dispatch = useDispatch();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const deletedDocuments = useSelector(selectAllDeletedDocuments);
+
+  const { pages, isLoading } = useCurrentUserPages();
+
+  const { handleTrashPage } = useMakeTrashPage();
+
+  const { handleDeletePage } = useDeletePage();
+
   const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
   const [documentIdToDelete, setDocumentIdToDelete] = useState("");
 
@@ -79,6 +89,8 @@ const TrashWindow: React.FC = () => {
     }
   };
 
+  const trashedPages = pages.filter((page: any) => page.isTrashed);
+
   return (
     <>
       <button
@@ -94,11 +106,11 @@ const TrashWindow: React.FC = () => {
         onCancel={handleCancel}
       >
         <ul>
-          {deletedDocuments.length > 0 ? (
-            deletedDocuments.map(
-              (document: {
-                _id: React.Key | null | undefined;
-                title:
+          {trashedPages.length > 0 ? (
+            trashedPages.map(
+              (page: {
+                _id: string;
+                name:
                   | string
                   | number
                   | bigint
@@ -112,20 +124,21 @@ const TrashWindow: React.FC = () => {
                   | Promise<React.AwaitedReactNode>
                   | null
                   | undefined;
+                isTrashed: boolean;
               }) => (
                 <li
-                  key={document._id}
+                  key={`${page._id}-${page.isTrashed}`}
                   className="border border-gray-300 rounded-lg p-3 flex justify-between items-center"
                 >
-                  <span>{document.title}</span>
+                  <span>{page.name}</span>
                   <div>
                     <RestorePageIcon
                       className="cursor-pointer"
-                      onClick={() => handleRestore(document._id)}
+                      onClick={() => handleTrashPage(page._id, true)}
                     />
                     <BsTrash
                       className="ml-2 cursor-pointer"
-                      onClick={() => handleDeleteDocument(document._id)}
+                      onClick={() => handleDeletePage(page._id)}
                     />
                   </div>
                 </li>

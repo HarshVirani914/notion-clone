@@ -3,7 +3,7 @@ import { IsArray, IsOptional, IsString } from "class-validator";
 export class CreatePageDto {
     @IsString()
     @IsOptional()
-    id: string;
+    _id: string;
 
     @IsString()
     @IsOptional()

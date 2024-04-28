@@ -3,7 +3,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { User } from 'src/auth/schema/user.schema';
-import { Page } from './schema/page.schema';
+import { Page } from './dto/Page.dto';
 import { CreatePageDto } from './dto/CreatePage.dto';
 
 @Injectable()
@@ -57,19 +57,22 @@ export class PageService {
 
     async create(page: CreatePageDto) {
         try {
-            let updatedPage;
+            const createdPage = await new this.pageModel(page).save();
 
-            if (page?.id) {
-                updatedPage = await this.pageModel.findByIdAndUpdate(page.id, page, { new: true });
-            }
+            return createdPage;
+        } catch (error) {
+            throw new Error(`[Create Page] [${page._id}] [${page.userId}]: Error creating page`);
+        }
+    }
 
-            if (!updatedPage) {
-                updatedPage = await new this.pageModel(page).save();
-            }
+    async update(page: CreatePageDto) {
+        try {
+
+            const updatedPage = await this.pageModel.findByIdAndUpdate(page._id, page, { new: true });
 
             return updatedPage;
         } catch (error) {
-            throw new Error(`[Create Page] [${page.id}] [${page.userId}]: Error creating page`);
+            throw new Error(`[Update Page] [${page._id}] [${page.userId}]: Error updating page`);
         }
     }
 
@@ -93,4 +96,15 @@ export class PageService {
         }
     }
 
+    async recover(id: string) {
+        try {
+            const page = await this.pageModel.findByIdAndUpdate(id, { isTrashed: false }, { new: true });
+
+            console.log("page recovered", page);
+
+            return page;
+        } catch (error) {
+            throw new Error(`[Recover Page] [${id}]: Error while recovering the page`);
+        }
+    }
 }

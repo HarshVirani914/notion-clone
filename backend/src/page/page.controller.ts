@@ -1,5 +1,6 @@
 import { Body, Controller, Delete, Get, HttpException, HttpStatus, Param, Post, Put } from '@nestjs/common';
 import { PageService } from './page.service';
+import { CreatePageDto } from './dto/CreatePage.dto';
 
 @Controller('page')
 export class PageController {
@@ -21,6 +22,29 @@ export class PageController {
         }
     }
 
+    @Post('/')
+    async create(@Body() page: CreatePageDto): Promise<any> {
+        try {
+            const newPage = await this.pageService.create(page);
+
+            return newPage;
+        } catch (error) {
+            throw new HttpException(error?.message, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+
+    @Put('/:id')
+    async update(@Param('id') id: string, @Body() page: CreatePageDto): Promise<any> {
+        try {
+            const updatedPage = await this.pageService.update({ ...page, _id: id });
+
+            return updatedPage;
+        } catch (error) {
+            throw new HttpException(error?.message, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
     @Get('/:id')
     async get(@Param('id') id: string): Promise<any> {
         try {
@@ -35,9 +59,10 @@ export class PageController {
     @Get('/user/:userId')
     async pages(@Param('userId') userId: string): Promise<any> {
         try {
-            const page = await this.pageService.pages(userId);
+            const pages = await this.pageService.pages(userId);
 
-            return page;
+            console.log("pages", pages)
+            return pages;
         } catch (error) {
             throw new HttpException(error?.message, HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -54,7 +79,18 @@ export class PageController {
         }
     }
 
-    @Delete('/id')
+    @Put('/recover/:id')
+    async recover(@Param('id') id: string): Promise<any> {
+        try {
+            const page = await this.pageService.recover(id);
+
+            return page;
+        } catch (error) {
+            throw new HttpException(error?.message, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @Delete('/:id')
     async delete(@Param('id') id: string): Promise<any> {
         try {
             const page = await this.pageService.delete(id);

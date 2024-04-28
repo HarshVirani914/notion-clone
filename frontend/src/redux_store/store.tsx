@@ -11,9 +11,11 @@ import {
   PURGE,
   REGISTER,
 } from "redux-persist";
+import thunk from "redux-thunk";
 import storage from "redux-persist/lib/storage";
 // import { getDefaultMiddleware } from '@reduxjs/toolkit';
-import documentReducer from "@/store/features/document/documentSlice";
+import pageRrducer from "@/store/features/page/pageSlice";
+import { baseAPI } from "@/store/baseApi";
 
 const persistConfig = {
   key: "user",
@@ -24,16 +26,15 @@ const persistedReducer = persistReducer(persistConfig, authReducer);
 
 export const store = configureStore({
   reducer: {
+    [baseAPI.reducerPath]: baseAPI.reducer,
     auth: persistedReducer,
     notes: notesReducer,
-    document: documentReducer,
+    page: pageRrducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
-      serializableCheck: {
-        ignoredActions: [FLUSH, REGISTER, REHYDRATE, PAUSE, PERSIST, PURGE],
-      },
-    }),
+      serializableCheck: false,
+    }).concat(baseAPI.middleware) as any,
 });
 
 export type RootState = ReturnType<typeof store.getState>;
