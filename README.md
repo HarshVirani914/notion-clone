@@ -1,2 +1,0 @@
-# notion-clone
-# notion-clone

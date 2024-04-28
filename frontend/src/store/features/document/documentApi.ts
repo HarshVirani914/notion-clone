@@ -41,4 +41,4 @@ export const docuemntApi = baseAPI.injectEndpoints({
   })
 })
 
-export const { useCreateDocumentMutation } = docuemntApi;
+export const { useCreateDocumentMutation, useGetDocumentQuery } = docuemntApi;

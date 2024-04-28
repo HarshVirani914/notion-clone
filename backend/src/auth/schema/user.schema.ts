@@ -5,9 +5,9 @@ import mongoose from 'mongoose'
     timestamps: true
 })
 export class User {
-    
-    @Prop({type:mongoose.Schema.Types.ObjectId,ref:"User"})
-    userId:User
+
+    @Prop({ type: mongoose.Schema.Types.ObjectId, ref: "User" })
+    userId: User
 
     @Prop({ required: true, unique: true })
     username: string
@@ -19,10 +19,10 @@ export class User {
     password: string
 
     @Prop({ default: false })
-    confirm_password : string
+    confirm_password: string
 
     @Prop()
-    profile_image : string
+    profile_image: string
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

@@ -1,22 +1,22 @@
 // components/TrashWindow.tsx
-"use client"
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import { useDispatch, useSelector } from 'react-redux';
-import { Button, Modal } from 'antd';
-import RestorePageIcon from '@mui/icons-material/RestorePage';
-import { fetchDeletedDocuments, fetchNotes, selectAllDeletedDocuments } from '@/redux_store/slices/notesSlice';
-import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
-import { BsTrash } from 'react-icons/bs';
-import ConfirmationDialog from './confirmationDialog';
-
+"use client";
+import {
+  fetchDeletedDocuments,
+  fetchNotes,
+  selectAllDeletedDocuments,
+} from "@/redux_store/slices/notesSlice";
+import RestorePageIcon from "@mui/icons-material/RestorePage";
+import { Modal } from "antd";
+import axios from "axios";
+import React, { useEffect, useState } from "react";
+import { BsTrash } from "react-icons/bs";
+import { useDispatch, useSelector } from "react-redux";
+import ConfirmationDialog from "./confirmationDialog";
 
 interface DeletedDocument {
   _id: string;
   title: string;
 }
-
-
 
 const TrashWindow: React.FC = () => {
   const dispatch = useDispatch();
@@ -25,7 +25,7 @@ const TrashWindow: React.FC = () => {
   const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
   const [documentIdToDelete, setDocumentIdToDelete] = useState("");
 
-  const handleDeleteDocument = async (documentId) => {
+  const handleDeleteDocument = async (documentId: any) => {
     console.log("handleDeleteDocument called");
     //setIsAvailable(false);
 
@@ -49,29 +49,31 @@ const TrashWindow: React.FC = () => {
   const user = useSelector((state: any) => state.auth.user.user);
 
   useEffect(() => {
-    dispatch(fetchDeletedDocuments(user._id))
+    dispatch(fetchDeletedDocuments(user._id));
   }, [dispatch, user._id]);
 
   const handleRestore = async (documentId: string) => {
     try {
-      const res = await axios.put(`http://localhost:3001/document/restoreDocument/${documentId}`);
+      const res = await axios.put(
+        `http://localhost:3001/document/restoreDocument/${documentId}`
+      );
       dispatch(fetchNotes(user._id));
       dispatch(fetchDeletedDocuments(user._id));
-
     } catch (error) {
-      console.error('Error restoring document:', error);
+      console.error("Error restoring document:", error);
     }
   };
 
   const permenantDeleteDocument = async () => {
     try {
-      const res = await axios.delete(`http://localhost:3001/document/permanentDeleteDocument/${documentIdToDelete}`);
+      const res = await axios.delete(
+        `http://localhost:3001/document/permanentDeleteDocument/${documentIdToDelete}`
+      );
       console.log("res : ", res);
       dispatch(fetchNotes(user._id));
       dispatch(fetchDeletedDocuments(user._id));
-
     } catch (error) {
-      console.error('Error deleting document:', error);
+      console.error("Error deleting document:", error);
     } finally {
       setConfirmDialogOpen(false);
     }
@@ -79,22 +81,59 @@ const TrashWindow: React.FC = () => {
 
   return (
     <>
-      <button onClick={showModal} className="flex flex-row items-center h-12 transform hover:translate-x-2 transition-transform ease-in duration-200 text-gray-500 hover:text-gray-800">
+      <button
+        onClick={showModal}
+        className="flex flex-row items-center h-12 transform hover:translate-x-2 transition-transform ease-in duration-200 text-gray-500 hover:text-gray-800"
+      >
         <span className="text-sm font-medium pl-4">Trash</span>
       </button>
-      <Modal title="Deleted Items" open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
+      <Modal
+        title="Deleted Items"
+        open={isModalOpen}
+        onOk={handleOk}
+        onCancel={handleCancel}
+      >
         <ul>
-          {deletedDocuments.length>0 ?
-          deletedDocuments.map((document) => (
-            <li key={document._id} className="border border-gray-300 rounded-lg p-3 flex justify-between items-center">
-              <span>{document.title}</span>
-              <div>
-                <RestorePageIcon className='cursor-pointer' onClick={() => handleRestore(document._id)} />
-                <BsTrash className="ml-2 cursor-pointer" onClick={() => handleDeleteDocument(document._id)} />
-              </div>
-            </li>
-          )) : <p>No deleted items</p>
-        }
+          {deletedDocuments.length > 0 ? (
+            deletedDocuments.map(
+              (document: {
+                _id: React.Key | null | undefined;
+                title:
+                  | string
+                  | number
+                  | bigint
+                  | boolean
+                  | React.ReactElement<
+                      any,
+                      string | React.JSXElementConstructor<any>
+                    >
+                  | Iterable<React.ReactNode>
+                  | React.ReactPortal
+                  | Promise<React.AwaitedReactNode>
+                  | null
+                  | undefined;
+              }) => (
+                <li
+                  key={document._id}
+                  className="border border-gray-300 rounded-lg p-3 flex justify-between items-center"
+                >
+                  <span>{document.title}</span>
+                  <div>
+                    <RestorePageIcon
+                      className="cursor-pointer"
+                      onClick={() => handleRestore(document._id)}
+                    />
+                    <BsTrash
+                      className="ml-2 cursor-pointer"
+                      onClick={() => handleDeleteDocument(document._id)}
+                    />
+                  </div>
+                </li>
+              )
+            )
+          ) : (
+            <p>No deleted items</p>
+          )}
           {confirmDialogOpen && (
             <ConfirmationDialog
               open={confirmDialogOpen}
