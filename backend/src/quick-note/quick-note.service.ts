@@ -16,25 +16,25 @@ export class QuickNoteService {
     async createQuickNote(userId: string, title: string): Promise<QuickNote> {
         console.log(" user id : ", userId)
         console.log("title : ", title)
-        console.log("key ----------",process.env.OPEN_AI_KEY);
-        
+        console.log("key ----------", process.env.OPEN_AI_KEY);
+
         // Create a new quick note instance
         // const openAI = new OpenAIApi(new Configuration({
         //     apiKey: process.env.OPENAI_API_KEY,
         //   }));
         const openAI = new OpenAI(({
-            apiKey: "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",
-          }));
+            apiKey: process.env.OPENAI_API_KEY,
+        }));
         const completion = await openAI.chat.completions.create({
             model: "gpt-3.5-turbo",
-            messages:[{ role: "user", content: title }],
+            messages: [{ role: "user", content: title }],
         });
-      //  console.log(completion);
+        //  console.log(completion);
         console.log(completion.choices[0].message.content);
         const createdNote = new this.quickNoteModel({
             title,
             userId,
-            description : completion.choices[0].message.content
+            description: completion.choices[0].message.content
         });
         // Save the new quick note to the database
         return await createdNote.save();
