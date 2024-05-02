@@ -1,9 +1,9 @@
 import { useSelector } from "react-redux"
 
 export const useCurrentUser = () => {
-  const currentUser = useSelector((state: any) => state.auth.user.user)
+  const user = useSelector((state: any) => state.auth.user)
 
   return {
-    currentUser
+    user: user?.user
   }
 }

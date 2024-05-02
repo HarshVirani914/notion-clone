@@ -30,14 +30,15 @@ export class JwtStrategy extends PassportStrategy(Strategy)
     if (!user) {
       throw new UnauthorizedException('Login first to access this endpoint.');
     }
+    console.log("user----",user)
     return user;
   }
 
   private static extractJWTFromCookie(req: Request): string | null {
-    if (req.cookies && req.cookies.access_token) {
-      console.log(req.cookies.access_token);
-      console.log("token : ", req.cookies.access_token);
-      return req.cookies.access_token;
+    if (req.cookies && req.cookies.token) {
+      console.log(req.cookies.token);
+      console.log("token : ", req.cookies.token);
+      return req.cookies.token;
     }
     return null;
   }

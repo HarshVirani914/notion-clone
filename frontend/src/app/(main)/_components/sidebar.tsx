@@ -1,9 +1,11 @@
 "use client";
+import { useCreatePage } from "@/app/routes/editor/hooks/useCreatePage";
+import { useCurrentUser } from "@/app/routes/editor/hooks/useCurrentUser";
+import { useCurrentUserPages } from "@/app/routes/editor/hooks/useCurrentUserPages";
+import { useMakeTrashPage } from "@/app/routes/editor/hooks/useMakeTrashPage";
 import { logout } from "@/redux_store/slices/authSlice";
 import {
-  fetchDeletedDocuments,
-  fetchNotes,
-  selectAllNotes,
+  selectAllNotes
 } from "@/redux_store/slices/notesSlice";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
@@ -12,19 +14,14 @@ import NoteAddIcon from "@mui/icons-material/NoteAdd";
 import SearchIcon from "@mui/icons-material/Search";
 import SettingsIcon from "@mui/icons-material/Settings";
 import Avatar from "@mui/material/Avatar";
-import axios from "axios";
 import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
+import { useMemo, useState } from "react";
 import { BsTrash } from "react-icons/bs";
 import { useDispatch, useSelector } from "react-redux";
 import { ToastContainer } from "react-toastify";
 import ConfirmationDialog from "./confirmationDialog";
 import TrashWindow from "./trashWindow";
-import { useCurrentUserPages } from "@/app/routes/editor/hooks/useCurrentUserPages";
-import { useMakeTrashMutation } from "@/store/features/page";
-import { useMakeTrashPage } from "@/app/routes/editor/hooks/useMakeTrashPage";
-import { useRouter } from "next/navigation";
-import { useCreatePage } from "@/app/routes/editor/hooks/useCreatePage";
 
 interface SidebarProps {
   handleNoteClick: (documentId: string) => void;
@@ -34,10 +31,7 @@ interface SidebarProps {
 const Sidebar: React.FC = () => {
   const router = useRouter();
 
-  const isAuthenticated = useSelector(
-    (state: any) => state.auth.isAuthenticated
-  );
-  const user = useSelector((state: any) => state.auth.user.user);
+  const { user } = useCurrentUser();
 
   const { pages } = useCurrentUserPages();
 
@@ -58,18 +52,6 @@ const Sidebar: React.FC = () => {
   const [documentIdToDelete, setDocumentIdToDelete] = useState("");
   const [showTrashWindow, setShowTrashWindow] = useState(false);
 
-  //const [isAvailable, setIsAvailable] = useState(true);
-  useEffect(() => {
-    dispatch(fetchNotes(user._id));
-  }, [dispatch, user._id]);
-
-  const handleDeleteDocument = async (documentId) => {
-    console.log("handleDeleteDocument called");
-    setDocumentIdToDelete(documentId);
-    setConfirmDialogOpen(true);
-    console.log(confirmDialogOpen);
-  };
-
   const toggleTrashWindow = () => {
     setShowTrashWindow(!showTrashWindow);
   };
@@ -78,34 +60,34 @@ const Sidebar: React.FC = () => {
     setShowTrashWindow(false);
   };
 
-  const handleConfirmDelete = async () => {
-    try {
-      console.log("confirm call");
-      const response = await axios.delete(
-        `http://localhost:3001/document/deleteDocument/${documentIdToDelete}`
-      );
-      if (response.status === 200) {
-        // await toast.success('Document Deleted Successfully', {
-        //   position: "top-right",
-        //   autoClose: 5000,
-        //   hideProgressBar: false,
-        //   closeOnClick: true,
-        //   pauseOnHover: true,
-        //   draggable: true,
-        //   progress: undefined,
-        //   theme: "light",
-        //   transition: Bounce,
-        // });
-        console.log(response);
-        dispatch(fetchNotes(user._id));
-        dispatch(fetchDeletedDocuments(user._id));
-      }
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setConfirmDialogOpen(false);
-    }
-  };
+  // const handleConfirmDelete = async () => {
+  //   try {
+  //     console.log("confirm call");
+  //     const response = await axios.delete(
+  //       `http://localhost:3001/document/deleteDocument/${documentIdToDelete}`
+  //     );
+  //     if (response.status === 200) {
+  //       // await toast.success('Document Deleted Successfully', {
+  //       //   position: "top-right",
+  //       //   autoClose: 5000,
+  //       //   hideProgressBar: false,
+  //       //   closeOnClick: true,
+  //       //   pauseOnHover: true,
+  //       //   draggable: true,
+  //       //   progress: undefined,
+  //       //   theme: "light",
+  //       //   transition: Bounce,
+  //       // });
+  //       console.log(response);
+  //       dispatch(fetchNotes(user._id));
+  //       dispatch(fetchDeletedDocuments(user._id));
+  //     }
+  //   } catch (error) {
+  //     console.log(error);
+  //   } finally {
+  //     setConfirmDialogOpen(false);
+  //   }
+  // };
 
   const unTrashedPages = useMemo(() => {
     return pages?.filter((d: any) => !d?.isTrashed) || [];
@@ -116,7 +98,7 @@ const Sidebar: React.FC = () => {
   const createPage = async () => {
     const page = await handleCreatePage(
       {
-        name: "Untitled Page",
+        name: "Note 1",
         userId: user._id,
         document: "",
       },
@@ -124,11 +106,21 @@ const Sidebar: React.FC = () => {
         createdPage?.data &&
         router.push(`/routes/editor?id=${createdPage?.data?._id}`)
     );
+    //   toast.promise(page, {
+    //     loading: "Creating a new note...",
+    //     success: "New note created!",
+    //     error: "Failed to create a new note."
+    // });
   };
 
+  function handleLogout() {
+    dispatch(logout());
+    router.push("/");
+  }
+
   return (
-    <div className="min-h-screen flex flex-row bg-gray-100">
-      <div className="flex flex-col w-56  overflow-hidden">
+    <div className="h-screen flex flex-row bg-gray-100">
+      <div className="flex flex-col w-56 mt-[-150px]  overflow-hidden">
         <div className="flex items-center justify-center bg-slate-950 h-20 shadow-md">
           <Avatar sx={{ width: 24, height: 24 }}>H</Avatar>
           <span className="text-sm font-medium pl-4 text-white">
@@ -136,7 +128,7 @@ const Sidebar: React.FC = () => {
           </span>
         </div>
 
-        <ul className="flex flex-col py-4">
+        <ul className="flex flex-col py-4 items-start">
           <li>
             <a
               href="#"
@@ -163,7 +155,7 @@ const Sidebar: React.FC = () => {
               <span className="text-sm font-medium pl-4">Setting</span>
             </a>
           </li>
-          <ul className="flex flex-col my-2">
+          <ul className="flex flex-col my-2 w-full">
             {(unTrashedPages || []).map((page: any) => (
               <li
                 key={page._id}
@@ -207,7 +199,7 @@ const Sidebar: React.FC = () => {
               className="flex flex-row items-center h-12 transform hover:translate-x-2 transition-transform ease-in duration-200 text-gray-500 hover:text-gray-800"
             >
               <AddCircleOutlineIcon className="ml-6" />
-              <span className="text-sm font-medium pl-4">Quick Note</span>
+              <span className="text-sm font-medium pl-4">Quick Email</span>
             </Link>
           </li>
           <li className="flex flex-row items-center h-12 transform hover:translate-x-2 transition-transform ease-in duration-200 text-gray-500 hover:text-gray-800">
@@ -242,21 +234,16 @@ const Sidebar: React.FC = () => {
             </a>
           </li>
           <li>
-            <a
-              href="#"
-              className="flex flex-row items-center h-12 transform hover:translate-x-2 transition-transform ease-in duration-200 text-gray-500 hover:text-gray-800"
-            >
-              <LogoutIcon className="ml-6" />
-              <span className="text-sm font-medium pl-4">
-                <button
-                  onClick={() => {
-                    dispatch(logout());
-                  }}
-                >
-                  Logout
-                </button>
-              </span>
-            </a>
+            <LogoutIcon className="ml-6" />
+            <span className="text-sm font-medium pl-4">
+              <button
+                onClick={() => {
+                  handleLogout();
+                }}
+              >
+                Logout
+              </button>
+            </span>
           </li>
         </ul>
       </div>

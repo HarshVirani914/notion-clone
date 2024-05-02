@@ -1,31 +1,51 @@
-import { useCreatePageMutation } from "@/store/features/page";
+import { setPages, useCreatePageMutation } from "@/store/features/page";
 import { debounce } from "lodash";
+import { useDispatch } from "react-redux";
 import { useCurrentUser } from "./useCurrentUser";
 import { useLazyCurrentUserPages } from "./useLazyPages";
 
 export const useCreatePage = () => {
-  const { currentUser } = useCurrentUser()
+  const { user } = useCurrentUser();
 
-  const { handleFetchPages } = useLazyCurrentUserPages()
+  const dispatch = useDispatch();
+
+  const { pages, handleFetchPages } = useLazyCurrentUserPages();
 
   const [createPage, { data, isLoading, error }] = useCreatePageMutation();
 
-  const handleCreatePage = debounce(async (input: Record<string, any>, onComplete?: Function) => {
-    const createdPage = await createPage({ ...input, userId: currentUser._id });
+  const handleCreatePage = debounce(
+    async (
+      input: { name: string; document: string },
+      onComplete?: Function
+    ) => {
+      const { name, document } = input;
+      const createdPage: any = await createPage({
+        name,
+        document,
+        userId: user._id,
+      });
 
-    await handleFetchPages();
+      //    toast.promise(createdPage, {
+      //     loading: "Creating a new note...",
+      //     success: "New note created!",
+      //     error: "Failed to create a new note."
+      // });
 
-    if (onComplete) {
-      onComplete(createdPage);
-    }
+      if (createdPage?.data) dispatch(setPages([createdPage?.data, ...pages]));
 
-    return createdPage
-  }, 200)
+      if (onComplete) {
+        onComplete(createdPage);
+      }
+
+      return createdPage;
+    },
+    200
+  );
 
   return {
     page: data,
     isLoading,
     error,
     handleCreatePage,
-  }
-}
+  };
+};

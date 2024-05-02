@@ -56,40 +56,40 @@ const TrashWindow: React.FC = () => {
     setIsModalOpen(false);
   };
   // const [deletedDocuments, setDeletedDocuments] = useState<DeletedDocument[]>([]);
-  const user = useSelector((state: any) => state.auth.user.user);
+  const user = useSelector((state: any) => state.auth.user);
 
-  useEffect(() => {
-    dispatch(fetchDeletedDocuments(user._id));
-  }, [dispatch, user._id]);
+  // useEffect(() => {
+  //   dispatch(fetchDeletedDocuments(user._id));
+  // }, [dispatch, user._id]);
 
-  const handleRestore = async (documentId: string) => {
-    try {
-      const res = await axios.put(
-        `http://localhost:3001/document/restoreDocument/${documentId}`
-      );
-      dispatch(fetchNotes(user._id));
-      dispatch(fetchDeletedDocuments(user._id));
-    } catch (error) {
-      console.error("Error restoring document:", error);
-    }
-  };
+  // const handleRestore = async (documentId: string) => {
+  //   try {
+  //     const res = await axios.put(
+  //       `http://localhost:3001/document/restoreDocument/${documentId}`
+  //     );
+  //     dispatch(fetchNotes(user._id));
+  //     dispatch(fetchDeletedDocuments(user._id));
+  //   } catch (error) {
+  //     console.error("Error restoring document:", error);
+  //   }
+  // };
 
-  const permenantDeleteDocument = async () => {
-    try {
-      const res = await axios.delete(
-        `http://localhost:3001/document/permanentDeleteDocument/${documentIdToDelete}`
-      );
-      console.log("res : ", res);
-      dispatch(fetchNotes(user._id));
-      dispatch(fetchDeletedDocuments(user._id));
-    } catch (error) {
-      console.error("Error deleting document:", error);
-    } finally {
-      setConfirmDialogOpen(false);
-    }
-  };
+  // const permenantDeleteDocument = async () => {
+  //   try {
+  //     const res = await axios.delete(
+  //       `http://localhost:3001/document/permanentDeleteDocument/${documentIdToDelete}`
+  //     );
+  //     console.log("res : ", res);
+  //     dispatch(fetchNotes(user._id));
+  //     dispatch(fetchDeletedDocuments(user._id));
+  //   } catch (error) {
+  //     console.error("Error deleting document:", error);
+  //   } finally {
+  //     setConfirmDialogOpen(false);
+  //   }
+  // };
 
-  const trashedPages = pages.filter((page: any) => page.isTrashed);
+  const trashedPages = pages?.filter((page: any) => page.isTrashed) || [];
 
   return (
     <>

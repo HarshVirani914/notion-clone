@@ -1,4 +1,6 @@
 "use client";
+import { useCurrentUser } from "@/app/routes/editor/hooks/useCurrentUser";
+import { useAuthenticated } from "@/app/routes/editor/hooks/useIsauthenticate";
 import Avatar from "@mui/material/Avatar";
 import { deepOrange } from "@mui/material/colors";
 import { useState } from "react";
@@ -8,10 +10,8 @@ import { useSelector } from "react-redux";
 
 const UserItem = () => {
   const [isOpen, setIsOpen] = useState(true);
-  const isAuthenticated = useSelector(
-    (state: any) => state.auth.isAuthenticated
-  );
-  const user = useSelector((state: any) => state.auth.user.user);
+  const { isAuthenticated } = useAuthenticated()
+  const { user  } = useCurrentUser()
 
   const sideList = [
     {

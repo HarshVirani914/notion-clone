@@ -1,5 +1,3 @@
-"use client"
-
 import { useScrollTop } from "@/hooks/use-scroll-top";
 import { cn } from "@/lib/utils";
 import { Logo } from "./logo";
@@ -15,23 +13,22 @@ import { useDispatch, useSelector } from "react-redux";
 import Avatar from '@mui/material/Avatar';
 import { logout } from "@/redux_store/slices/authSlice";
 import EditIcon from '@mui/icons-material/Edit';
-import ProfileModal, { UserProfile } from "./userProfile";
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import UserProfileModal from "./userProfile/userProfile";
-// import { useAuth } from "@/app/auth/utils/authContext";
+import { useAuthenticated } from "@/app/routes/editor/hooks/useIsauthenticate";
+import { useCurrentUser } from "@/app/routes/editor/hooks/useCurrentUser";
 
 export const Navbar = () => {
 
     // redux persist
 
-    const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
-    const user = useSelector((state) => state.auth.user.user);
+    const { isAuthenticated } = useAuthenticated()
+    const { user  } = useCurrentUser()
     const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const dropdownRef = useRef(null);
 
-
-
+    console.log("user navbar ------",user)
     const handleProfileClick = () => {
         setIsDropdownOpen(!isDropdownOpen);
     };
@@ -40,12 +37,9 @@ export const Navbar = () => {
         // Dispatch logout action
         dispatch(logout());
     };
-    console.log("auth : ", isAuthenticated);
-    // console.log(user.username);
 
-    const dispatch = useDispatch()
+    const dispatch = useDispatch();
     const [loading, setLoading] = useState(false);
-    // const [user, setUser] = useState(null);
 
     const handleGetNotionFree = () => {
         setLoading(true);
@@ -55,7 +49,21 @@ export const Navbar = () => {
     }
 
     const scrolled = useScrollTop();
-    const navigate = useRouter()
+    const navigate = useRouter();
+
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+                setIsDropdownOpen(false);
+            }
+        };
+
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, []);
+
     return (
         <div className={cn(
             "z-50 bg-background dark:bg-[#1F1F1F] fixed top-0 flex items-center w-full p-6",

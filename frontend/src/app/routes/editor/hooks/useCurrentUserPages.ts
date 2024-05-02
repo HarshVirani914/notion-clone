@@ -4,12 +4,12 @@ import { useSelector } from "react-redux";
 import { debounce } from "lodash";
 
 export const useCurrentUserPages = () => {
-  const { currentUser } = useCurrentUser();
+  const { user } = useCurrentUser();
 
   const currentUserPages = useSelector((state: any) => state.page.pages);
 
-  const { error, isLoading, refetch } = useGetPagesQuery(currentUser?._id, {
-    skip: !currentUser?._id
+  const { error, isLoading, refetch } = useGetPagesQuery(user?._id, {
+    skip: !user?._id
   });
 
   const handleRefetch = debounce(refetch, 500)

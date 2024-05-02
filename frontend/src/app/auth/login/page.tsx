@@ -6,7 +6,6 @@ import { loginFormSchema } from './loginFormSchema';
 import { useFormik } from 'formik';
 import { useRouter } from 'next/navigation';
 // import { authenticate } from '@/app/api/user_api';
-import { middleware } from '@/app/middleware';
 import { Bounce, toast } from 'react-toastify';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -60,12 +59,13 @@ const LoginForm: React.FC = () => {
     // const isAuthenticated =  await dispatch(authenticate({email,password}));
     const response = await apiService.post('http://localhost:3001/auth/login', JSON.stringify({ email, password }));
     console.log("res : ", response);
-    if (response.jwt) {
+    if (response.token) {
       console.log("login successfull");
-      const current_user = response.jwt.user;
-      console.log("cur user : ", current_user)
+      const token = response.token;
+      const current_user = response.user;
+      console.log("cur user : ", current_user,token)
       await toast.success('Login Successfull');
-      dispatch(login({ user: current_user }));
+      dispatch(login({ user: current_user, token : token }));
       window.location.href = "/";
     }
     else {

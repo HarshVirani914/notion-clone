@@ -3,11 +3,11 @@ import { AuthService } from './auth.service';
 import { UserSignupDto } from './dto/signupDto.dto';
 import { User } from './schema/user.schema';
 import { UserLoginDto } from './dto/loginDto.dto';
-import { AuthGuard } from '@nestjs/passport';
 import { Response } from 'express';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
 import { diskStorage } from 'multer';
+import { AuthGuard } from './jwt-auth.guard' // aa barabar chhe?
 import { extname } from 'path';
 import { UpdateProfileDto } from './dto/updateProfileDto.dto';
 import { ObjectId } from 'mongodb'; // Import ObjectId type
@@ -42,19 +42,18 @@ export class AuthController {
     }
 
     @Post('/login')
-    async login(@Body() userLoginDto: UserLoginDto, @Res({ passthrough: true }) response: Response): Promise<void> {
-        const jwt = await this.authService.loginUser(userLoginDto);
+    async login(@Body() userLoginDto: UserLoginDto, @Res({ passthrough: true }) response: Response) {
+        const { token, user } = await this.authService.loginUser(userLoginDto);
+        response.cookie('token', token, {
+            httpOnly: true, secure: true,
+            sameSite: 'none',
+        });
 
-        response.cookie('jwt', jwt, {
-            httpOnly: true,
-            secure: true,
-            expires: new Date(Date.now() + 365 * 24 * 60 * 1000),
-            domain: 'localhost',
-        }).send({ jwt });
+        response.status(HttpStatus.OK).json({ token, user });
     }
 
     @Get('/test')
-    @UseGuards(AuthGuard())
+    @UseGuards(AuthGuard)
     test(@Res() response: Response): void {
         try {
             response.status(200).send("Hello from Home");
@@ -64,10 +63,10 @@ export class AuthController {
         }
     }
 
-    @Put('/update/:userId')
+    @Put('/update/:userId')  
     @UseInterceptors(FileInterceptor('file'))
     async updateProfile(
-        @Param('userId') userId :string,
+        @Param('userId') userId: string,
         @Body() updateProfileDto: UpdateProfileDto,
         @UploadedFile() file: Express.Multer.File,
     ): Promise<Object> {
@@ -75,7 +74,7 @@ export class AuthController {
             if (!file) {
                 throw new HttpException('No file uploaded', HttpStatus.BAD_REQUEST);
             }
-            return this.authService.updateProfile(file.path,userId, updateProfileDto);
+            return this.authService.updateProfile(file.path, userId, updateProfileDto);
         } catch (error) {
             console.error('Error in updating profile: ', error);
             throw new HttpException('Failed to update profile', HttpStatus.INTERNAL_SERVER_ERROR);
@@ -97,7 +96,7 @@ export class AuthController {
     }
 
     @Get('/fetchUsers')
-    @UseGuards(AuthGuard()) // Guard to protect this endpoint
+    @UseGuards(AuthGuard) // Guard to protect this endpoint ha to aaya  AuthGuard rakhje me je mokalyu e ane frontend side thi jyare api call karavde tyare credentials includes kari deje 
     async fetchUsers(): Promise<User[]> {
         try {
             return await this.authService.fetchUsers();

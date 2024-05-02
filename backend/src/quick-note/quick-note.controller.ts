@@ -14,4 +14,15 @@ export class QuickNoteController {
         const createdNote = await this.quickNoteService.createQuickNote(userId, title);
         return createdNote; // You might want to return the created note or an appropriate response
     }
+
+    @Post('/quickEmail')
+    async processData(@Body() reqBody: any) {
+      const data = reqBody.data;
+  
+      console.log(data);
+  
+      const response = await this.quickNoteService.generateResponse(data);
+  
+      return response;
+    }
 }
