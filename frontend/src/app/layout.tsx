@@ -8,6 +8,7 @@ import "./globals.css";
 import { persistor, store } from "@/redux_store/store";
 import React from "react";
 import { PersistGate } from "redux-persist/integration/react";
+import { ModalProvider } from "@/components/providers/modal-provider";
 // import { persistor, store } from "@/redux_store/store";
 const inter = Inter({ subsets: ["latin"] });
 
@@ -30,6 +31,7 @@ export default function RootLayout({
             <PersistGate loading={null} persistor={persistor}>
               {children}
             </PersistGate>
+            <ModalProvider />
           </Provider>
         </ThemeProvider>
       </body>

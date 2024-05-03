@@ -1,9 +1,8 @@
 // notesSlice.ts
 
-import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
-import { RootState } from "./store";
-import { string } from "yup";
+import { RootState } from "../store";
 
 interface Note {
   userId: string;

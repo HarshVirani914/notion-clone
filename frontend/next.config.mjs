@@ -4,4 +4,7 @@ export default {
   typescript: {
     ignoreBuildErrors: true,
   },
+  images: {
+    domains: ["tmpfiles.org"],
+  },
 };

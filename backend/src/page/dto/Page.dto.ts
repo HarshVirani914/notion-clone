@@ -18,6 +18,9 @@ export class Page {
   })
   document: string;
 
+  @Prop({ type: String, default: '' })
+  coverImage: string;
+
   @Prop({ type: Boolean, default: false })
   isTrashed: boolean;
 

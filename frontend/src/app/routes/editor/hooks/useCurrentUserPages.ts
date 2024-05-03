@@ -4,7 +4,9 @@ import { useSelector } from "react-redux";
 import { debounce } from "lodash";
 
 export const useCurrentUserPages = () => {
-  const { user } = useCurrentUser();
+  const user = useSelector((state: any) => state.auth.user);
+
+  console.log("user", user)
 
   const currentUserPages = useSelector((state: any) => state.page.pages);
 

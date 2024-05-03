@@ -1,12 +1,8 @@
 "use client";
 import { useCreatePage } from "@/app/routes/editor/hooks/useCreatePage";
-import { useCurrentUser } from "@/app/routes/editor/hooks/useCurrentUser";
 import { useCurrentUserPages } from "@/app/routes/editor/hooks/useCurrentUserPages";
 import { useMakeTrashPage } from "@/app/routes/editor/hooks/useMakeTrashPage";
-import { logout } from "@/redux_store/slices/authSlice";
-import {
-  selectAllNotes
-} from "@/redux_store/slices/notesSlice";
+import { getUser, logout } from "@/redux_store/slices/authSlice";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import LogoutIcon from "@mui/icons-material/Logout";
@@ -16,49 +12,25 @@ import SettingsIcon from "@mui/icons-material/Settings";
 import Avatar from "@mui/material/Avatar";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import { BsTrash } from "react-icons/bs";
 import { useDispatch, useSelector } from "react-redux";
 import { ToastContainer } from "react-toastify";
-import ConfirmationDialog from "./confirmationDialog";
 import TrashWindow from "./trashWindow";
-
-interface SidebarProps {
-  handleNoteClick: (documentId: string) => void;
-  toggleTrashWindow: () => void;
-}
 
 const Sidebar: React.FC = () => {
   const router = useRouter();
-
-  const { user } = useCurrentUser();
+  const dispatch = useDispatch();
 
   const { pages } = useCurrentUserPages();
+
+  const user = useSelector(getUser);
+
+  // const pages = getPagesByUserId(pagesStore, user?._id);
 
   const { handleTrashPage } = useMakeTrashPage();
 
   const { handleCreatePage, isLoading } = useCreatePage();
-
-  console.log("pages", pages);
-
-  console.log("user--", user);
-  const documents = useSelector(selectAllNotes);
-  console.log("first----", documents);
-  const dispatch = useDispatch();
-  const [showNewDocumentComponent, setShowNewDocumentComponent] =
-    useState(false);
-  const [showSingleNote, setShowSingleNote] = useState(false);
-  const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
-  const [documentIdToDelete, setDocumentIdToDelete] = useState("");
-  const [showTrashWindow, setShowTrashWindow] = useState(false);
-
-  const toggleTrashWindow = () => {
-    setShowTrashWindow(!showTrashWindow);
-  };
-
-  const closeTrashWindow = () => {
-    setShowTrashWindow(false);
-  };
 
   // const handleConfirmDelete = async () => {
   //   try {
@@ -99,18 +71,12 @@ const Sidebar: React.FC = () => {
     const page = await handleCreatePage(
       {
         name: "Note 1",
-        userId: user._id,
         document: "",
       },
       (createdPage: any) =>
         createdPage?.data &&
         router.push(`/routes/editor?id=${createdPage?.data?._id}`)
     );
-    //   toast.promise(page, {
-    //     loading: "Creating a new note...",
-    //     success: "New note created!",
-    //     error: "Failed to create a new note."
-    // });
   };
 
   function handleLogout() {
@@ -124,7 +90,7 @@ const Sidebar: React.FC = () => {
         <div className="flex items-center justify-center bg-slate-950 h-20 shadow-md">
           <Avatar sx={{ width: 24, height: 24 }}>H</Avatar>
           <span className="text-sm font-medium pl-4 text-white">
-            {user.username}
+            {!user?.username ? "User" : user?.username}
           </span>
         </div>
 
@@ -156,31 +122,34 @@ const Sidebar: React.FC = () => {
             </a>
           </li>
           <ul className="flex flex-col my-2 w-full">
-            {(unTrashedPages || []).map((page: any) => (
-              <li
-                key={page._id}
-                className="flex flex-row items-center h-12 transform hover:translate-x-2 transition-transform ease-in duration-200 text-gray-500 hover:text-gray-800"
-              >
-                <NoteAddIcon className="ml-6" />
-                <Link href={`/routes/editor?id=${page._id}`}>
-                  <span className="text-sm font-medium pl-4">{page.name}</span>
-                </Link>
-                <div className="flex-grow" />{" "}
-                {/* This creates space to push the trash icon to the end */}
-                <BsTrash
-                  className="mr-4"
-                  onClick={() => handleTrashPage(page._id)}
-                />
-              </li>
-            ))}
+            {unTrashedPages &&
+              unTrashedPages.map((page: any) => (
+                <li
+                  key={page._id}
+                  className="flex flex-row items-center h-12 transform hover:translate-x-2 transition-transform ease-in duration-200 text-gray-500 hover:text-gray-800"
+                >
+                  <NoteAddIcon className="ml-6" />
+                  <Link href={`/routes/editor?id=${page._id}`}>
+                    <span className="text-sm font-medium pl-4">
+                      {page.name}
+                    </span>
+                  </Link>
+                  <div className="flex-grow" />{" "}
+                  {/* This creates space to push the trash icon to the end */}
+                  <BsTrash
+                    className="mr-4"
+                    onClick={() => handleTrashPage(page._id)}
+                  />
+                </li>
+              ))}
 
-            {confirmDialogOpen && (
+            {/* {confirmDialogOpen && (
               <ConfirmationDialog
                 open={confirmDialogOpen}
                 handleClose={() => setConfirmDialogOpen(false)}
                 handleConfirm={handleConfirmDelete}
               />
-            )}
+            )} */}
           </ul>
           <li>
             <button

@@ -6,18 +6,22 @@ import "@blocknote/core/fonts/inter.css";
 import { BlockNoteView, useCreateBlockNote } from "@blocknote/react";
 import "@blocknote/react/style.css";
 import { Share } from "@mui/icons-material";
-import { IconButton } from "@mui/material";
+import { Button, IconButton } from "@mui/material";
 import { useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { MouseEventHandler, useEffect, useState } from "react";
 import { Publish } from "./publish";
 import "./styles.css";
+import { useCoverImage } from "@/hooks/use-cover-image";
+import { Cover } from "./cover";
 
 function EditorTry() {
   const searchParams = useSearchParams();
 
-  const { page, handleUpdatePage, isPageLoading } = useUpdatePage(
-    searchParams.get("id") || ""
-  );
+  const coverImage = useCoverImage();
+
+  const pageId = searchParams.get("id");
+
+  const { page, handleUpdatePage, isPageLoading } = useUpdatePage(pageId || "");
 
   const [pageName, setPageName] = useState(page?.name || "");
 
@@ -77,9 +81,9 @@ function EditorTry() {
 
   useEffect(() => {
     if (!pageName && page?.name) {
-      setPageName(page.name)
+      setPageName(page.name);
     }
-  }, [page])
+  }, [page?.name]);
 
   if (isPageLoading) {
     return "Loading content...";
@@ -93,7 +97,7 @@ function EditorTry() {
   //   throw new Error("Function not implemented.");
   // }
 
-  function handleShare(event: MouseEvent<HTMLButtonElement, MouseEvent>): void {
+  function handleShare(event: any): void {
     throw new Error("Function not implemented.");
   }
 
@@ -103,6 +107,7 @@ function EditorTry() {
         <div className="flex mb-4">
           <p>{pageName}</p>
         </div>
+        <Cover pageId={pageId!} preview url={page.coverImage} />
         <div>
           <input
             type="text"
@@ -111,6 +116,11 @@ function EditorTry() {
             placeholder="Untitled Page"
             className="w-10% p-2 rounded-md border-none focus:outline-none focus:border-blue-500"
           />
+        </div>
+        <div>
+          <Button type="button" variant="contained" onClick={coverImage.onOpen}>
+            add cover
+          </Button>
         </div>
         <div className="w-[40%] fixed">
           <BlockNoteView

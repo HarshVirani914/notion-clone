@@ -16,8 +16,8 @@ export const pageApi = baseAPI.injectEndpoints({
         try {
           const { data } = await queryFulfilled;
 
-          if (data?._id) {
-            dispatch(addPage(data?._id));
+          if (data) {
+            dispatch(addPage(data));
           }
 
           return data;
@@ -36,8 +36,8 @@ export const pageApi = baseAPI.injectEndpoints({
         try {
           const { data } = await queryFulfilled;
 
-          if (data?._id) {
-            dispatch(updatePage(data?._id));
+          if (data) {
+            dispatch(updatePage(data));
           }
 
           return data;
@@ -90,10 +90,11 @@ export const pageApi = baseAPI.injectEndpoints({
         try {
           const { data } = await queryFulfilled;
 
-          //TODO add data to the store
+          console.log("trash data", data)
 
-          if (data?._id) {
-            dispatch(updatePage(data?._id));
+          //TODO add data to the store
+          if (data) {
+            dispatch(updatePage(data));
           }
 
           return data;
@@ -113,8 +114,10 @@ export const pageApi = baseAPI.injectEndpoints({
 
           //TODO add data to the store
 
-          if (data?._id) {
-            dispatch(updatePage(data?._id));
+          console.log("data", data)
+
+          if (data) {
+            dispatch(updatePage(data));
           }
 
           return data;
