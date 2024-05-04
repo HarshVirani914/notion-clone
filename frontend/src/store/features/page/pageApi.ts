@@ -138,4 +138,5 @@ export const {
   useRecoverMutation,
   useLazyGetPagesQuery,
   useUpdatePageMutation,
+  useLazyGetPageQuery
 } = pageApi;
