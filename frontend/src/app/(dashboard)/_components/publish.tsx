@@ -1,6 +1,6 @@
 "use client";
 
-import { useUpdatePage } from "@/app/routes/editor/hooks/useUpdatePage";
+import { useUpdatePage } from "@/app/(dashboard)/page/hooks/useUpdatePage";
 import { Button } from "@/components/ui/button";
 import {
   Popover,

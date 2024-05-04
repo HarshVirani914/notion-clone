@@ -2,7 +2,7 @@
 import { BlockNoteView, useCreateBlockNote } from "@blocknote/react";
 import { useSearchParams } from "next/navigation";
 import React from "react";
-import { usePage } from "../editor/hooks/usePage";
+import { usePage } from "../../(dashboard)/page/hooks/usePage";
 import "./styles.css";
 import "@blocknote/core/fonts/inter.css";
 import "@blocknote/react/style.css";

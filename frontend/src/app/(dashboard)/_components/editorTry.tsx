@@ -1,6 +1,6 @@
 "use client";
 
-import { useUpdatePage } from "@/app/routes/editor/hooks/useUpdatePage";
+import { useUpdatePage } from "@/app/(dashboard)/page/hooks/useUpdatePage";
 import { Block } from "@blocknote/core";
 import "@blocknote/core/fonts/inter.css";
 import { BlockNoteView, useCreateBlockNote } from "@blocknote/react";
@@ -103,7 +103,7 @@ function EditorTry() {
 
   return (
     <>
-      <div className="editor-container w-[90%]">
+      <div className="editor-container w-full h-full">
         <div className="flex mb-4">
           <p>{pageName}</p>
         </div>

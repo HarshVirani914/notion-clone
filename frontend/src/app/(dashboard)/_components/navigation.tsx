@@ -1,6 +1,6 @@
 "use client";
-import { useCurrentUser } from "@/app/routes/editor/hooks/useCurrentUser";
-import { useAuthenticated } from "@/app/routes/editor/hooks/useIsauthenticate";
+import { useCurrentUser } from "@/app/(dashboard)/page/hooks/useCurrentUser";
+import { useAuthenticated } from "@/app/(dashboard)/page/hooks/useIsauthenticate";
 import { logout } from "@/redux_store/slices/authSlice";
 import { fetchNoteById, selectAllNotes } from "@/redux_store/slices/notesSlice";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";

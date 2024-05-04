@@ -1,10 +1,10 @@
 "use client";
-import MainLayout from "@/app/(main)/layout";
+import MainLayout from "@/app/(dashboard)/layout";
 import { fetchNoteById } from "@/redux_store/slices/notesSlice";
 import { useRouter } from "next/navigation";
 import React, { FC, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Navbar } from "@/app/(main)/_components/navbar";
+import { Navbar } from "@/app/(dashboard)/_components/navbar";
 
 export default function Page({ params }: { params: { documentId: string } }) {
   const singleDocument = useSelector((state) => state.notes.note);

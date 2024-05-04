@@ -1,6 +1,6 @@
 "use client";
-import { useCurrentUser } from "@/app/routes/editor/hooks/useCurrentUser";
-import { useAuthenticated } from "@/app/routes/editor/hooks/useIsauthenticate";
+import { useCurrentUser } from "@/app/(dashboard)/page/hooks/useCurrentUser";
+import { useAuthenticated } from "@/app/(dashboard)/page/hooks/useIsauthenticate";
 import Avatar from "@mui/material/Avatar";
 import { deepOrange } from "@mui/material/colors";
 import { useState } from "react";

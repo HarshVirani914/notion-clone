@@ -1,8 +1,8 @@
 // components/TrashWindow.tsx
 "use client";
-import { useCurrentUserPages } from "@/app/routes/editor/hooks/useCurrentUserPages";
-import { useDeletePage } from "@/app/routes/editor/hooks/useDeletePage";
-import { useMakeTrashPage } from "@/app/routes/editor/hooks/useMakeTrashPage";
+import { useCurrentUserPages } from "@/app/(dashboard)/page/hooks/useCurrentUserPages";
+import { useDeletePage } from "@/app/(dashboard)/page/hooks/useDeletePage";
+import { useMakeTrashPage } from "@/app/(dashboard)/page/hooks/useMakeTrashPage";
 import { getUser } from "@/redux_store/slices/authSlice";
 import { getPagesByUserId } from "@/store/features/page";
 import RestorePageIcon from "@mui/icons-material/RestorePage";

@@ -12,10 +12,10 @@ interface EmptyDocumentProps {
 }
 
 export const EmptyDocument: React.FC = () => {
-    const user = useSelector((state: any) => state.auth.user);
+    const user = useSelector((state: any) => state.auth.user?.user);
     return (
         <>
-            <div className="flex flex-col items-center justify-center h-full mr-[50%]">
+            <div className="flex flex-col items-center justify-center h-full">
                 <img
                     src="/empty.png"
                     className="dark:hidden"

@@ -1,7 +1,7 @@
 "use client";
-import { useCreatePage } from "@/app/routes/editor/hooks/useCreatePage";
-import { useCurrentUserPages } from "@/app/routes/editor/hooks/useCurrentUserPages";
-import { useMakeTrashPage } from "@/app/routes/editor/hooks/useMakeTrashPage";
+import { useCreatePage } from "@/app/(dashboard)/page/hooks/useCreatePage";
+import { useCurrentUserPages } from "@/app/(dashboard)/page/hooks/useCurrentUserPages";
+import { useMakeTrashPage } from "@/app/(dashboard)/page/hooks/useMakeTrashPage";
 import { getUser, logout } from "@/redux_store/slices/authSlice";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";

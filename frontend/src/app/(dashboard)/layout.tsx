@@ -2,8 +2,8 @@
 import { redirect } from "next/navigation";
 import { useSelector } from "react-redux";
 import Sidebar from "./_components/sidebar";
-import { useCurrentUser } from "../routes/editor/hooks/useCurrentUser";
-import { useAuthenticated } from "../routes/editor/hooks/useIsauthenticate";
+import { useCurrentUser } from "./page/hooks/useCurrentUser";
+import { useAuthenticated } from "./page/hooks/useIsauthenticate";
 
 const MainLayout = ({ children }: { children: React.ReactNode }) => {
   const { isAuthenticated } = useAuthenticated()
@@ -17,11 +17,7 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <div className="h-screen flex dark:bg-[#1F1F1F]">
       <Sidebar />
-
-      {/* <Document children={undefined} /> */}
-      {/* <main className="flex-1 h-full overflow-y-auto">
-      </main> */}
-      <div className="flex flex-col ml-[5%]">
+      <div className="flex flex-col flex-grow">
         {children}
       </div>
     </div>
