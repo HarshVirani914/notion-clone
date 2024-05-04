@@ -104,4 +104,14 @@ export class AuthController {
             throw new HttpException('Failed to fetch users', HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    @Get('/getUserByEmail')
+    @UseGuards(AuthGuard) // Guard to protect this endpoint ha to aaya  AuthGuard rakhje me je mokalyu e ane frontend side thi jyare api call karavde tyare credentials includes kari deje 
+    async getUserByEmail(@Query('slug') slug: string): Promise<User[]> {
+        try {
+            return await this.authService.getUserByEmail(slug);
+        } catch (error) {
+            throw new HttpException('Failed to fetch users', HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 }

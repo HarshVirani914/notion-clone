@@ -45,7 +45,10 @@ lerna-debug.log*
 # temp directory
 .temp
 .tmp
-
+.yarn
+.yarn/cache
+yarn.lock
+.yarnrc.yml
 # Runtime data
 pids
 *.pid

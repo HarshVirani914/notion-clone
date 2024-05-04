@@ -6,23 +6,24 @@ import mongoose from 'mongoose'
 })
 export class User {
 
-    @Prop({ type: mongoose.Schema.Types.ObjectId, ref: "User" })
-    userId: User
-
-    @Prop({ required: true, unique: true })
+    @Prop({ required: true })
     username: string
 
     @Prop({ required: true, unique: true, lowercase: true })
     email: string
 
-    @Prop({ required: true, minlength: 9 })
+    @Prop({ required: true })
     password: string
-
-    @Prop({ default: false })
-    confirm_password: string
 
     @Prop()
     profile_image: string
+
+    // @Prop()
+    // subscriptionInfo:{
+    //     startDate:Date,
+    //     endDate:Date,
+    //     planType:string,
+    // }
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

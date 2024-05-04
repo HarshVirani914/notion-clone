@@ -128,7 +128,7 @@ export class AuthService {
 
     async fetchUsers(): Promise<User[]> {
         try {
-            const users = await this.userModel.find().exec();
+            const users = await this.userModel.find({},{password:-1}).exec();
             if (!users || users.length === 0) {
                 throw new NotFoundException('No users found.');
             }
@@ -147,6 +147,16 @@ export class AuthService {
             return user;
         } catch (error) {
             throw new InternalServerErrorException('Failed to find user.');
+        }
+    }
+
+    async getUserByEmail(slug: string): Promise<User[]> {
+
+        try {
+            const users = await this.userModel.find({email:{$regex:new RegExp(`^${slug}`)}},{userId:"$_id",_id:0,email:1}); 
+            return users
+        } catch (error) {
+            throw new InternalServerErrorException('Failed to fetch users.');
         }
     }
 }

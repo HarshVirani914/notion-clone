@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Types } from 'mongoose';
+import  { Types } from 'mongoose';
+import * as mongoose from 'mongoose';
 import { User } from 'src/auth/schema/user.schema';
 
 @Schema({
@@ -29,6 +30,10 @@ export class Page {
 
   @Prop({ type: Date, default: Date.now })
   updatedAt: Date;
+
+  @Prop({type:Array,default:[]})
+  sharedUsers:[{ type: mongoose.Schema.Types.ObjectId,
+    ref: 'User'}]
 }
 
 export const PageSchema = SchemaFactory.createForClass(Page);
