@@ -1,13 +1,13 @@
 "use client";
 import { useCurrentUser } from "@/modules/hooks";
+import { useUpdateUser } from "@/modules/user/hooks";
+import { updateCurrentUser } from "@/store/features/auth";
 import { Button, Grid, TextField } from "@mui/material";
-import axios from "axios";
 import { useFormik } from "formik";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { updateFormSchema } from "./updateProfileSchema";
 import Modal from "./userModal";
-import { updateCurrentUser } from "@/store/features/auth";
 
 interface UserProfile {
   username: string;
@@ -28,6 +28,9 @@ const UserProfileModal: React.FC<UserProfileModalProps> = ({
 }) => {
   const { user } = useCurrentUser();
   const dispatch = useDispatch();
+
+  const { handleUpdateUser } = useUpdateUser();
+
   const [previewImage, setPreviewImage] = useState<string | null>(
     user?.profile_image || null
   );
@@ -72,10 +75,7 @@ const UserProfileModal: React.FC<UserProfileModalProps> = ({
   console.log(formik.errors);
   const updateUser = async (formData: any) => {
     try {
-      const res = await axios.put(
-        `http://localhost:3001/auth/update/${user._id}`,
-        formData
-      );
+      const res = await handleUpdateUser({ id: user._id, ...formData });
       console.log("update res : ", res.data);
       const current_user = res.data;
       if (res.data) {

@@ -1,4 +1,5 @@
 import { baseAPI } from "@/store/baseApi";
+import { updateCurrentUser } from "../auth";
 
 export const authApi = baseAPI.injectEndpoints({
   endpoints: (builder) => ({
@@ -18,7 +19,25 @@ export const authApi = baseAPI.injectEndpoints({
         }
       },
     }),
+    updateUser: builder.mutation({
+      query: (payload: any) => ({
+        url: `auth/update`,
+        method: "POST",
+        body: payload,
+      }),
+      onQueryStarted: async (_payload, { queryFulfilled, dispatch }) => {
+        try {
+          const { data } = await queryFulfilled;
+
+          if(data) dispatch(updateCurrentUser(data))
+
+          return data;
+        } catch (e) {
+          console.log("Error while updating user", e);
+        }
+      },
+    }),
   }),
 });
 
-export const { useUsersQuery } = authApi;
+export const { useUsersQuery, useUpdateUserMutation } = authApi;
