@@ -5,13 +5,14 @@ import { Button } from "@mui/material";
 import Link from "next/link";
 import { useSelector } from "react-redux";
 import { useCreatePage } from "./hooks/useCreatePage";
+import { useCurrentUser } from "@/modules/hooks";
 
 type Props = {
   id: string;
 };
 
 const page = (props: Props) => {
-  const user = useSelector((state: any) => state.auth.user);
+  const {user} = useCurrentUser();
 
   const { handleCreatePage } = useCreatePage();
 

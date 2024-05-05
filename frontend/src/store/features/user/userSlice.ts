@@ -16,15 +16,9 @@ export const authSlice = createSlice({
     removeCurrentUser: (state) => {
       state.currentUser = null;
     },
-    updateCurrentUser: (state, action) => {
-      state.currentUser = {
-        ...state.currentUser,
-        ...action.payload,
-      };
-    },
   },
 });
 
-export const { setCurrentUser, removeCurrentUser, updateCurrentUser } = authSlice.actions;
+export const { setCurrentUser, removeCurrentUser } = authSlice.actions;
 
 export const authReducer = authSlice.reducer;

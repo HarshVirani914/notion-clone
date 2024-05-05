@@ -1,11 +1,12 @@
 "use client";
+import { useCurrentUser } from "@/modules/hooks";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import { Button } from "@mui/material";
 import Link from "next/link";
 import { useSelector } from "react-redux";
 
 export const EmptyDocument: React.FC = () => {
-  const user = useSelector((state: any) => state.auth.user);
+  const {user} = useCurrentUser();
 
   const handleClick = () => {};
 

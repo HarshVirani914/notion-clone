@@ -2,6 +2,8 @@
 import { useCreatePage } from "@/app/(dashboard)/page/hooks/useCreatePage";
 import { useCurrentUserPages } from "@/app/(dashboard)/page/hooks/useCurrentUserPages";
 import { useMakeTrashPage } from "@/app/(dashboard)/page/hooks/useMakeTrashPage";
+import { useCurrentUser } from "@/modules/hooks";
+import { removeCurrentUser } from "@/store/features/auth";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import LogoutIcon from "@mui/icons-material/Logout";
@@ -13,10 +15,9 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useMemo } from "react";
 import { BsTrash } from "react-icons/bs";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { ToastContainer } from "react-toastify";
-import TrashWindow from "./TrashWindow";
-import { removeCurrentUser } from "@/store/features/auth";
+import TrashWindow from "./trashWindow";
 
 const Sidebar: React.FC = () => {
   const router = useRouter();
@@ -24,7 +25,7 @@ const Sidebar: React.FC = () => {
 
   const { pages } = useCurrentUserPages();
 
-  const user = useSelector((state: any) => state.auth.user);
+  const { user } = useCurrentUser();
 
   const { handleTrashPage } = useMakeTrashPage();
 

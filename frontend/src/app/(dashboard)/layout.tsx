@@ -1,8 +1,7 @@
 "use client";
 import { redirect } from "next/navigation";
-import { useSelector } from "react-redux";
-import Sidebar from "./_components/Sidebar";
-import { useCurrentUser } from "./page/hooks/useCurrentUser";
+import { useCurrentUser } from "../../modules/hooks/useCurrentUser";
+import Sidebar from "./_components/sidebar";
 import { useAuthenticated } from "./page/hooks/useIsauthenticate";
 
 const MainLayout = ({ children }: { children: React.ReactNode }) => {
