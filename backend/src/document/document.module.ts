@@ -2,10 +2,10 @@ import { Module } from '@nestjs/common';
 import { DocumentController } from './document.controller';
 import { DocumentService } from './document.service';
 import { MongooseModule } from '@nestjs/mongoose';
-import { DocumentSchema } from './schema/document.schema';
-import { UserSchema } from 'src/auth/schema/user.schema';
+import { DocumentSchema } from '../models/document.schema';
+import { UserSchema } from 'src/models/user.schema';
 import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
-import { TrashDocumentSchema } from './schema/trashDocument.schema';
+import { TrashDocumentSchema } from '../models/trashDocument.schema';
 
 @Module({
   imports : [

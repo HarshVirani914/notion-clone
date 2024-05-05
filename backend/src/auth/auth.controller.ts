@@ -1,7 +1,7 @@
-import { Body, Controller, Post, Res, Get, UseGuards, UseInterceptors, UploadedFile, HttpException, HttpStatus, NotFoundException, Query, Param, Put } from '@nestjs/common';
+import { Body, Controller, Post, Res, Get, UseGuards, UseInterceptors, UploadedFile, HttpException, HttpStatus, NotFoundException, Query, Param, Put, Req } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { UserSignupDto } from './dto/signupDto.dto';
-import { User } from './schema/user.schema';
+import { User } from '../models/user.schema';
 import { UserLoginDto } from './dto/loginDto.dto';
 import { Response } from 'express';
 import { FileInterceptor } from '@nestjs/platform-express';
@@ -26,14 +26,13 @@ export class AuthController {
     constructor(private authService: AuthService, private readonly cloudinaryService: CloudinaryService) { }
 
     @Post('/signup')
-    @UseInterceptors(FileInterceptor('file', { storage }))
-    async signUp(@Body() userSignupDto: UserSignupDto, @UploadedFile() file: Express.Multer.File): Promise<string> {
-
+    @UseInterceptors(FileInterceptor('profile_image', { storage }))
+    async signUp(@Body() userSignupDto: UserSignupDto, @UploadedFile() profile_image: Express.Multer.File): Promise<string> {
         try {
-            if (!file) {
+            if (!profile_image) {
                 throw new HttpException('No file uploaded', HttpStatus.BAD_REQUEST);
             }
-            return this.authService.createUser(file.path, userSignupDto);
+            return this.authService.createUser(profile_image.path, userSignupDto);
         }
         catch (error) {
             console.log("error in uploading image : ", error);
@@ -64,17 +63,19 @@ export class AuthController {
     }
 
     @Put('/update/:userId')  
+    @UseGuards(AuthGuard)
     @UseInterceptors(FileInterceptor('file'))
     async updateProfile(
-        @Param('userId') userId: string,
         @Body() updateProfileDto: UpdateProfileDto,
         @UploadedFile() file: Express.Multer.File,
+        @Req() req:Request
     ): Promise<Object> {
         try {
+            const currentUser = req['currentUser']; // Access current user from request context
             if (!file) {
                 throw new HttpException('No file uploaded', HttpStatus.BAD_REQUEST);
             }
-            return this.authService.updateProfile(file.path, userId, updateProfileDto);
+            return this.authService.updateProfile(file.path, updateProfileDto,currentUser);
         } catch (error) {
             console.error('Error in updating profile: ', error);
             throw new HttpException('Failed to update profile', HttpStatus.INTERNAL_SERVER_ERROR);
@@ -82,7 +83,8 @@ export class AuthController {
     }
 
     @Get('/search')
-    async searchUser(@Query('name') name: string): Promise<User[]> {
+    @UseGuards(AuthGuard)
+    async searchUser(@Query('name') name: string,        @Req() req:Request): Promise<User[]> {
         try {
             console.log(name);
             const users = await this.authService.searchUserByName(name);
@@ -97,7 +99,7 @@ export class AuthController {
 
     @Get('/fetchUsers')
     @UseGuards(AuthGuard) // Guard to protect this endpoint ha to aaya  AuthGuard rakhje me je mokalyu e ane frontend side thi jyare api call karavde tyare credentials includes kari deje 
-    async fetchUsers(): Promise<User[]> {
+    async fetchUsers(        @Req() req:Request): Promise<User[]> {
         try {
             return await this.authService.fetchUsers();
         } catch (error) {
@@ -107,7 +109,7 @@ export class AuthController {
 
     @Get('/getUserByEmail')
     @UseGuards(AuthGuard) // Guard to protect this endpoint ha to aaya  AuthGuard rakhje me je mokalyu e ane frontend side thi jyare api call karavde tyare credentials includes kari deje 
-    async getUserByEmail(@Query('slug') slug: string): Promise<User[]> {
+    async getUserByEmail(@Query('slug') slug: string,        @Req() req:Request): Promise<User[]> {
         try {
             return await this.authService.getUserByEmail(slug);
         } catch (error) {

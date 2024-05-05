@@ -2,7 +2,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
-import { User } from 'src/auth/schema/user.schema';
+import { User } from 'src/models/user.schema';
 import { Page } from './dto/Page.dto';
 import { CreatePageDto } from './dto/CreatePage.dto';
 
@@ -130,6 +130,25 @@ export class PageService {
                 throw new Error("Some users were not found")
             }
             await this.pageModel.updateOne({_id:pageId},{$set:{sharedUsers:userObjectIds}})
+            return "success";
+        } catch (error) {
+            throw new Error(`Something went wrong, please try again`);
+        }   
+    }
+
+    async removeSharedUsers(userId:string,pageId:string):Promise<string>{
+        try {
+            const page = await this.pageModel.findById(pageId, { isTrashed: false }, { new: true });
+            
+            if(!page){
+                throw new Error("Page not found");
+            }
+            
+            const user = await this.userModel.find({_id:new Types.ObjectId(userId)});
+            if(!user){
+                throw new Error("user were not found")
+            }
+            await this.pageModel.updateOne({_id:pageId},{$pull:{sharedUsers:new Types.ObjectId(userId)}})
             return "success";
         } catch (error) {
             throw new Error(`Something went wrong, please try again`);

@@ -1,10 +1,10 @@
 import { ConflictException, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { User } from 'src/auth/schema/user.schema';
+import { User } from 'src/models/user.schema';
 import { CreateDocumentDto } from './dto/CreateDocument.dto';
 import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
-import { TrashDocument } from './schema/trashDocument.schema';
+import { TrashDocument } from '../models/trashDocument.schema';
 
 @Injectable()
 export class DocumentService {

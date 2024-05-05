@@ -14,7 +14,8 @@ import { PageModule } from './page/page.module';
 import { DocumentController } from './document/document.controller';
 import { QuickNoteModule } from './quick-note/quick-note.module';
 import { ShareDocumentModule } from './share-document/share-document.module';
-import { StripeModule } from './stripe/stripe.module';
+import { StripeModule } from './payment/stripe.module';
+import { CommonModule } from './common/common.module';
 
 
 // db connection
@@ -38,7 +39,7 @@ const DBURL: string = `mongodb+srv://${username}:${password}@cluster0.89cuca2.mo
     MulterModule.register({
       dest: './images',
     }),
-    MongooseModule.forRoot(DBURL), AuthModule, CloudinaryModule, DocumentModule, ShareDocumentModule, QuickNoteModule, PageModule, StripeModule],
+    MongooseModule.forRoot(DBURL), AuthModule, CloudinaryModule, DocumentModule, ShareDocumentModule, QuickNoteModule, PageModule, StripeModule, CommonModule],
   controllers: [AppController, AuthController, DocumentController,],
   providers: [AppService, CloudinaryService,],
 })

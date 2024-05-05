@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
 import { ShareDocumentController } from './share-document.controller';
 import { ShareDocumentService } from './share-document.service';
-import { ShareDocumentSchema } from './schema/shareDocument.schema';
+import { ShareDocumentSchema } from '../models/shareDocument.schema';
 import { MongooseModule } from '@nestjs/mongoose';
-import { UserSchema } from 'src/auth/schema/user.schema';
-import { DocumentSchema } from 'src/document/schema/document.schema';
+import { UserSchema } from 'src/models/user.schema';
+import { DocumentSchema } from 'src/models/document.schema';
 
 @Module({
   imports :[

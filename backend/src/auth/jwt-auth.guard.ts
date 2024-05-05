@@ -1,4 +1,6 @@
 
+import { PassportStrategy } from '@nestjs/passport';
+import { ExtractJwt, Strategy } from 'passport-jwt';
 import { CanActivate, ExecutionContext, Injectable, UnauthorizedException } from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { AuthService } from '../auth/auth.service';
@@ -16,9 +18,13 @@ export class AuthGuard implements CanActivate {
     console.log("token",request.cookie)
     console.log("token from heaader -----",request.headers.authorization?.split(' ')[1]);
     const token = request.headers.authorization?.split(' ')[1];
+    request.currentUser="fgbfgbfgbfgb"
     if (!token) {
       throw new UnauthorizedException("You are not authenticated");
     }
     return this.authService.verifyToken(token);
   }
 }
+
+
+

@@ -1,12 +1,14 @@
-import { Body, Controller, Delete, Get, HttpException, HttpStatus, Param, Post, Put } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpException, HttpStatus, Param, Post, Put, Req, UseGuards } from '@nestjs/common';
 import { PageService } from './page.service';
 import { CreatePageDto } from './dto/CreatePage.dto';
+import { AuthGuard } from 'src/auth/jwt-auth.guard';
 
 @Controller('page')
 export class PageController {
   constructor(private pageService: PageService) { }
 
   @Post('/:userId')
+  @UseGuards(AuthGuard)
   async addPage(@Body() pages: Array<{ id: string, type: string, content: string, children: Array<{ id: string, type: string, content: string }> }>, @Param('userId') userId: string) {
     try {
       console.log("Pages received:", pages);
@@ -23,6 +25,7 @@ export class PageController {
   }
 
   @Post('/')
+  @UseGuards(AuthGuard)
   async create(@Body() page: CreatePageDto): Promise<any> {
     try {
       const newPage = await this.pageService.create(page);
@@ -35,6 +38,7 @@ export class PageController {
 
 
   @Put('/:id')
+  @UseGuards(AuthGuard)
   async update(@Param('id') id: string, @Body() page: CreatePageDto): Promise<any> {
     try {
       const updatedPage = await this.pageService.update({ ...page, _id: id });
@@ -46,6 +50,7 @@ export class PageController {
   }
 
   @Get('/:id')
+  @UseGuards(AuthGuard)
   async get(@Param('id') id: string): Promise<any> {
     try {
       const page = await this.pageService.get(id);
@@ -57,9 +62,14 @@ export class PageController {
   }
 
   @Get('/user/:userId')
-  async pages(@Param('userId') userId: string): Promise<any> {
+  @UseGuards(AuthGuard)
+  async pages(@Param('userId') userId: string,@Req() req:Request): Promise<any> {
     try {
+      const currentUser = req['currentUser']; // Access current user from request context
+      console.log('::??currentUser', currentUser)
+
       const pages = await this.pageService.pages(userId);
+
 
       console.log("pages", pages)
       return pages;
