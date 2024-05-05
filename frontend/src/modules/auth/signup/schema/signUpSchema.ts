@@ -29,7 +29,7 @@ export const signUpSchema = Yup.object({
     .email("Invalid email address")
     .required("Please enter email"),
   password: passwordSchema.required(),
-  confirmPassword: confirmPasswordSchema.required(),
+  confirm_password: confirmPasswordSchema.required(),
   profile_image: Yup.mixed()
     .required("Select your profile image")
     .test("fileFormat", "Image only", (value) => {
