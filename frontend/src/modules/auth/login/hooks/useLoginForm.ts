@@ -24,7 +24,7 @@ export const useLogin = () => {
 
       dispatch(setCurrentUser(response?.data?.user));
 
-      router.push("/");
+      router.push("/page");
 
       console.log("[Login User] [Response]:", response);
     } catch (error: any) {

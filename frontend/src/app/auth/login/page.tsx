@@ -6,14 +6,13 @@ import Link from "next/link";
 import React from "react";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { loginFormSchema } from "./loginFormSchema";
 
 const LoginForm: React.FC = () => {
-  const { handleSubmit, initialValues } = useLogin();
+  const { handleSubmit, initialValues, validationSchema } = useLogin();
 
   const formik = useFormik({
     initialValues,
-    validationSchema: loginFormSchema,
+    validationSchema,
     onSubmit: (values) => {
       handleSubmit(values);
     },

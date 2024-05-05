@@ -1,13 +1,15 @@
 "use client";
 import { useAuthenticated } from "@/app/(dashboard)/page/hooks/useIsauthenticate";
 import { Button } from "@/components/ui/button";
+import { useCurrentUser } from "@/modules/hooks";
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
+import { useSelector } from "react-redux";
 
 export const Heading = () => {
-  const { isAuthenticated } = useAuthenticated();
+  const { user } = useCurrentUser();
 
-  console.log("auth on heading : ", isAuthenticated);
+  console.log("auth on heading : ", user);
 
   return (
     <div className="max-w-3xl space-y-4">
@@ -21,16 +23,16 @@ export const Heading = () => {
         better, faster work happens.
       </h3>
 
-      {isAuthenticated && (
+      {user && (
         <Button asChild>
-          <Link href={"/routes/documents"}>
+          <Link href={"/page"}>
             <span>Enter Notion</span>
             <ArrowRight />
           </Link>
         </Button>
       )}
 
-      {!isAuthenticated && (
+      {!user && (
         <Button asChild>
           <Link href={"/auth/login"}>
             <span>Get Free Notion</span>

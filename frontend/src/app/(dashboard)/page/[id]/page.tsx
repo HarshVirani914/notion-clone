@@ -8,7 +8,6 @@ interface PageProps {
 
 const editorPage: React.FC<PageProps> = ({ params }) => {
   const { id } = params;
-  console.log("id-----------", id);
-  return <Editor />;
+  return <Editor pageId={id} />;
 };
 export default editorPage;

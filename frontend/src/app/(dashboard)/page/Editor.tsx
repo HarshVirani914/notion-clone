@@ -7,18 +7,17 @@ import { BlockNoteView, useCreateBlockNote } from "@blocknote/react";
 import "@blocknote/react/style.css";
 import { Share } from "@mui/icons-material";
 import { Button, IconButton } from "@mui/material";
-import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Cover } from "../_components/cover";
-import { useUpdatePage } from "./hooks/useUpdatePage";
 import { Publish } from "../_components/publish";
+import { useUpdatePage } from "./hooks/useUpdatePage";
 
-function Editor() {
-  const searchParams = useSearchParams();
+interface EditorProps {
+  pageId: string;
+}
 
+const Editor: React.FC<EditorProps> = ({ pageId }) => {
   const coverImage = useCoverImage();
-
-  const pageId = searchParams.get("id");
 
   const { page, handleUpdatePage } = useUpdatePage(pageId || "");
 
@@ -129,6 +128,6 @@ function Editor() {
       </div>
     </>
   );
-}
+};
 
 export default Editor;

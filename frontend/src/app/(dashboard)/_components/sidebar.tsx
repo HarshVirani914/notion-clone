@@ -38,11 +38,11 @@ const Sidebar: React.FC = () => {
   const createPage = async () => {
     const page = await handleCreatePage(
       {
-        name: "Note 1",
+        name: "Untitled",
         document: "",
       },
       (createdPage: any) =>
-        createdPage?.data && router.push(`/page?id=${createdPage?.data?._id}`)
+        createdPage?.data && router.push(`/page/${createdPage?.data?._id}`)
     );
   };
 
@@ -94,7 +94,7 @@ const Sidebar: React.FC = () => {
                   className="flex flex-row items-center h-12 transform hover:translate-x-2 transition-transform ease-in duration-200 text-gray-500 hover:text-gray-800"
                 >
                   <NoteAddIcon className="ml-6" />
-                  <Link href={`/page?id=${page._id}`}>
+                  <Link href={`/page/${page._id}`}>
                     <span className="text-sm font-medium pl-4">
                       {page.name}
                     </span>

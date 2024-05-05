@@ -36,5 +36,5 @@ export const signUpSchema = Yup.object({
       if (!value) return true;
       const file = value as File;
       return ["image/jpeg", "image/png", "image/gif"].includes(file.type);
-    }),
+    }).default(""),
 });

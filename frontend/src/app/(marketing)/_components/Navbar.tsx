@@ -1,10 +1,10 @@
-import { useCurrentUser } from "@/modules/hooks/useCurrentUser";
-import { useAuthenticated } from "@/app/(dashboard)/page/hooks/useIsauthenticate";
 import { ModeToggle } from "@/components/mode-toggle";
 import { Spinner } from "@/components/spinner";
 import { Button } from "@/components/ui/button";
 import { useScrollTop } from "@/hooks/use-scroll-top";
 import { cn } from "@/lib/utils";
+import { useCurrentUser } from "@/modules/hooks/useCurrentUser";
+import { removeCurrentUser } from "@/store/features/auth";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import EditIcon from "@mui/icons-material/Edit";
 import Avatar from "@mui/material/Avatar";
@@ -15,11 +15,9 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Logo } from "./logo";
 import UserProfileModal from "./userProfile/userProfile";
-import { removeCurrentUser } from "@/store/features/auth";
 
 export const Navbar = () => {
   const dispatch = useDispatch();
-  const { isAuthenticated } = useAuthenticated();
   const { user } = useCurrentUser();
 
   console.log("user navbar ------", user);
@@ -87,10 +85,8 @@ export const Navbar = () => {
               onClick={handleProfileClick}
             >
               <div className="w-10 rounded-full">
-                {isAuthenticated && (
-                  <Avatar alt="Remy Sharp" src={user?.profile_image} />
-                )}
-                {!isAuthenticated && <AccountCircleIcon />}
+                {user && <Avatar alt="Remy Sharp" src={user?.profile_image} />}
+                {!user && <AccountCircleIcon />}
               </div>
             </div>
             {isDropdownOpen && (
@@ -102,8 +98,8 @@ export const Navbar = () => {
                   <span>{document.title}</span>
                 </Link>
 
-                {!isAuthenticated && <Link href={"/auth/login"}> Login </Link>}
-                {isAuthenticated && (
+                {!user && <Link href={"/auth/login"}> Login </Link>}
+                {user && (
                   <button
                     onClick={() => {
                       dispatch(removeCurrentUser());
@@ -112,7 +108,7 @@ export const Navbar = () => {
                     Logout
                   </button>
                 )}
-                {isAuthenticated && (
+                {user && (
                   <li>
                     <EditIcon className="w-10" />
                     <button onClick={() => setIsProfileModalOpen(true)}>

@@ -24,8 +24,7 @@ export const Publish = ({ id }: { id: string }) => {
   const [copied, setCopied] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const url = `${origin}/routes/preview?id=${page._id}`;
-  console.log("urllllll-", url);
+  const url = `${origin}/preview?id=${page._id}`;
 
   const onPublish = () => {
     setIsSubmitting(true);

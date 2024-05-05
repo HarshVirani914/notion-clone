@@ -1,7 +1,14 @@
-import { useSignUpMutation } from "@/store/features/auth";
+import { setCurrentUser, useSignUpMutation } from "@/store/features/auth";
 import { signUpSchema } from "../schema/signUpSchema";
+import AuthToken from "@/lib/AuthToken";
+import { useDispatch } from "react-redux";
+import { useRouter } from "next/navigation";
 
-export const useSingUp = () => {
+export const useSignUp = () => {
+
+  const dispatch = useDispatch();
+  const rourter = useRouter();
+
   const [signUp, { isLoading, error }] = useSignUpMutation({});
 
   const handleSubmit = async (input: Record<string, string>) => {
@@ -11,11 +18,16 @@ export const useSingUp = () => {
         stripUnknown: true,
       });
 
-      const response = await signUp(sanitizeInput);
+      const response: any = await signUp(sanitizeInput);
 
-      // TODO: Redirect to dashboard on successful signUp
+      if (response?.data) {
+        AuthToken.set(response?.data?.token);
 
-      // TODO: Set token
+        dispatch(setCurrentUser(response?.data?.user));
+
+        rourter.push("/page");
+
+      }
 
       console.log("[SingUp User] [Response]:", response);
     } catch (error: any) {
@@ -26,7 +38,7 @@ export const useSingUp = () => {
   return {
     initialValues: signUpSchema.cast(
       {},
-      { assert: false, stripUnknown: false }
+      { assert: false, stripUnknown: true }
     ),
     validationSchema: signUpSchema,
     isLoading,

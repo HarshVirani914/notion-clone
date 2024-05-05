@@ -2,14 +2,12 @@
 import { redirect } from "next/navigation";
 import { useCurrentUser } from "../../modules/hooks/useCurrentUser";
 import Sidebar from "./_components/sidebar";
-import { useAuthenticated } from "./page/hooks/useIsauthenticate";
 
 const MainLayout = ({ children }: { children: React.ReactNode }) => {
-  const { isAuthenticated } = useAuthenticated();
   const { user } = useCurrentUser();
   console.log(user);
 
-  if (!isAuthenticated) {
+  if (!user) {
     return redirect("/");
   }
 
