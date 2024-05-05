@@ -1,13 +1,12 @@
 "use client";
-import { useSelector } from "react-redux";
-import Modal from "./userModal";
-import { useEffect, useState } from "react";
-import { Grid, TextField, Button } from "@mui/material";
-import { useFormik } from "formik";
-import { updateFormSchema } from "./updateProfileSchema";
-import axios from "axios";
-import { useDispatch } from "react-redux";
 import { update } from "@/redux_store/slices/authSlice";
+import { Button, Grid, TextField } from "@mui/material";
+import axios from "axios";
+import { useFormik } from "formik";
+import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { updateFormSchema } from "./updateProfileSchema";
+import Modal from "./userModal";
 
 interface UserProfile {
   username: string;

@@ -1,29 +1,16 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 
 import { fetchNoteById } from "@/redux_store/slices/notesSlice";
 import { useDispatch, useSelector } from "react-redux";
 import ShareDocument from "./shareDocument";
-//   import { useLocation } from "react-router-dom";
-//   import Center from "../components/utils/Center";
-//   import { getPage } from "../api/getPage";
-//   import { updateTitle, updateContent } from "../api/updatePage";
+
 export const Navbar = ({ documentId }: { documentId: string }) => {
-  const [title, setTitle] = useState("hey");
   const singleDocument = useSelector((state) => state.notes.note);
   const dispatch = useDispatch();
-  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
-    // Fetch the note details when the component mounts
-
     dispatch(fetchNoteById(documentId));
-    console.log("singleDocument : ", singleDocument);
   }, [dispatch, documentId]);
-
-  const handleShare = () => {
-    // Toggle the visibility of the modal
-    setIsModalOpen(!isModalOpen);
-  };
 
   return (
     <>
@@ -34,18 +21,10 @@ export const Navbar = ({ documentId }: { documentId: string }) => {
             {singleDocument.title}
           </span>
           <div className="flex md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse">
-            <ShareDocument documentId={singleDocument._id} />
+            {/* <ShareDocument documentId={singleDocument._id} /> */}
           </div>
         </div>
       </nav>
     </>
   );
 };
-
-// const ShareButton = ({ text }) => {
-//     return (
-//         <button className="share-button">
-//             {text}
-//         </button>
-//     );
-// };

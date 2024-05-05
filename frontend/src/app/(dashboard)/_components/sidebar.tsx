@@ -2,7 +2,6 @@
 import { useCreatePage } from "@/app/(dashboard)/page/hooks/useCreatePage";
 import { useCurrentUserPages } from "@/app/(dashboard)/page/hooks/useCurrentUserPages";
 import { useMakeTrashPage } from "@/app/(dashboard)/page/hooks/useMakeTrashPage";
-import { getUser, logout } from "@/redux_store/slices/authSlice";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import LogoutIcon from "@mui/icons-material/Logout";
@@ -16,7 +15,8 @@ import { useMemo } from "react";
 import { BsTrash } from "react-icons/bs";
 import { useDispatch, useSelector } from "react-redux";
 import { ToastContainer } from "react-toastify";
-import TrashWindow from "./trashWindow";
+import TrashWindow from "./TrashWindow";
+import { removeCurrentUser } from "@/store/features/auth";
 
 const Sidebar: React.FC = () => {
   const router = useRouter();
@@ -24,48 +24,15 @@ const Sidebar: React.FC = () => {
 
   const { pages } = useCurrentUserPages();
 
-  const user = useSelector(getUser);
-
-  // const pages = getPagesByUserId(pagesStore, user?._id);
+  const user = useSelector((state: any) => state.auth.user);
 
   const { handleTrashPage } = useMakeTrashPage();
 
   const { handleCreatePage, isLoading } = useCreatePage();
 
-  // const handleConfirmDelete = async () => {
-  //   try {
-  //     console.log("confirm call");
-  //     const response = await axios.delete(
-  //       `http://localhost:3001/document/deleteDocument/${documentIdToDelete}`
-  //     );
-  //     if (response.status === 200) {
-  //       // await toast.success('Document Deleted Successfully', {
-  //       //   position: "top-right",
-  //       //   autoClose: 5000,
-  //       //   hideProgressBar: false,
-  //       //   closeOnClick: true,
-  //       //   pauseOnHover: true,
-  //       //   draggable: true,
-  //       //   progress: undefined,
-  //       //   theme: "light",
-  //       //   transition: Bounce,
-  //       // });
-  //       console.log(response);
-  //       dispatch(fetchNotes(user._id));
-  //       dispatch(fetchDeletedDocuments(user._id));
-  //     }
-  //   } catch (error) {
-  //     console.log(error);
-  //   } finally {
-  //     setConfirmDialogOpen(false);
-  //   }
-  // };
-
   const unTrashedPages = useMemo(() => {
     return pages?.filter((d: any) => !d?.isTrashed) || [];
   }, [pages]);
-
-  console.log("unTrashedPages", unTrashedPages);
 
   const createPage = async () => {
     const page = await handleCreatePage(
@@ -79,7 +46,7 @@ const Sidebar: React.FC = () => {
   };
 
   function handleLogout() {
-    dispatch(logout());
+    dispatch(removeCurrentUser());
     router.push("/");
   }
 
@@ -107,8 +74,6 @@ const Sidebar: React.FC = () => {
                 placeholder="Search.."
                 required
               />
-
-              {/* <span className="text-sm font-medium pl-4">Search</span> */}
             </a>
           </li>
           <li>
@@ -141,14 +106,6 @@ const Sidebar: React.FC = () => {
                   />
                 </li>
               ))}
-
-            {/* {confirmDialogOpen && (
-              <ConfirmationDialog
-                open={confirmDialogOpen}
-                handleClose={() => setConfirmDialogOpen(false)}
-                handleConfirm={handleConfirmDelete}
-              />
-            )} */}
           </ul>
           <li>
             <button

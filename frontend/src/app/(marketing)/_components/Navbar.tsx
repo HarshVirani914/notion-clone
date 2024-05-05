@@ -18,8 +18,6 @@ import { Logo } from "./logo";
 import UserProfileModal from "./userProfile/userProfile";
 
 export const Navbar = () => {
-  // redux persist
-
   const dispatch = useDispatch();
   const { isAuthenticated } = useAuthenticated();
   const { user } = useCurrentUser();

@@ -1,4 +1,4 @@
-import { useUpdatePageMutation } from "@/store/features/page";
+import { useGetPageQuery, useUpdatePageMutation } from "@/store/features/page";
 import { debounce } from "lodash";
 import { usePage } from "./usePage";
 
@@ -23,6 +23,8 @@ export const useUpdatePage = (id?: string) => {
     },
     300
   );
+
+  console.log("page in useUpdatePage", page);
 
   return {
     page: page,

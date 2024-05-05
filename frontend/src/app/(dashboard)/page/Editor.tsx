@@ -67,7 +67,7 @@ function Editor() {
             },
           ],
     },
-    [page]
+    [page?.document]
   );
 
   useEffect(() => {
@@ -96,13 +96,15 @@ function Editor() {
     throw new Error("Function not implemented.");
   }
 
+  console.log("page*************", page);
+
   return (
     <>
       <div className="editor-container w-full h-full">
         <div className="flex mb-4">
           <p>{pageName}</p>
         </div>
-        <Cover pageId={pageId!} preview url={page.coverImage} />
+        <Cover pageId={pageId!} preview url={page?.coverImage} />
         <div>
           <input
             type="text"

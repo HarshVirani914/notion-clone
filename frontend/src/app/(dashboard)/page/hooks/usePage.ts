@@ -1,17 +1,23 @@
 import { useLazyGetPageQuery } from "@/store/features/page";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { useSelector } from "react-redux";
 
 export const usePage = (id?: string) => {
-  const page = useSelector((state: any) => state.page.pages.find((page: any) => page._id === id));
+  const pages = useSelector((state: any) => state.page.pages);
 
   const [fetchPage, { data, error, isLoading }] = useLazyGetPageQuery();
 
+  const currentPage = useMemo(() => {
+    return pages.find((page: any) => page._id === id)
+  }, [pages])
+
   useEffect(() => {
-    if (!page && id) {
+    if (!currentPage && id) {
       fetchPage(id || "");
     }
-  }, [id])
+  }, [id, currentPage])
 
-  return { page: page || data, error, isLoading }
+  return {
+    page: currentPage || data, error, isLoading
+  }
 }

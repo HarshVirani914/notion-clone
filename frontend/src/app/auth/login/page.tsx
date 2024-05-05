@@ -60,11 +60,12 @@ const LoginForm: React.FC = () => {
     console.log("res : ", response);
 
     if (response.token) {
-      console.log("login successfull");
       const token = response.token;
       const current_user = response.user;
+
       console.log("cur user : ", current_user, token);
-      await toast.success("Login Successfull");
+      toast.success("Login Successfull");
+
       dispatch(login({ user: current_user, token: token }));
       window.location.href = "/";
     } else {

@@ -36,7 +36,7 @@ export const useCreatePage = () => {
       //     error: "Failed to create a new note."
       // });
 
-      if (createdPage?.data) dispatch(setPages([createdPage?.data, ...pages]));
+      // if (createdPage?.data) dispatch(setPages([createdPage?.data, ...pages]));
 
       if (onComplete) {
         onComplete(createdPage);

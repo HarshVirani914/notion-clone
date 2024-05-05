@@ -7,6 +7,8 @@ import { useSelector } from "react-redux";
 export const EmptyDocument: React.FC = () => {
   const user = useSelector((state: any) => state.auth.user);
 
+  const handleClick = () => {};
+
   return (
     <>
       <div className="flex flex-col items-center justify-center h-full">
@@ -21,9 +23,10 @@ export const EmptyDocument: React.FC = () => {
           variant="contained"
           tabIndex={-1}
           startIcon={<AddCircleOutlineIcon />}
+          onClick={handleClick}
         >
           {" "}
-          <Link href={`/routes/addpage`}>Create Note</Link>
+          <Link href={`/page`}>Create Note</Link>
         </Button>
       </div>
     </>

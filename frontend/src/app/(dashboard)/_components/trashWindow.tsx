@@ -1,6 +1,5 @@
 // components/TrashWindow.tsx
 "use client";
-import { useCurrentUserPages } from "@/app/(dashboard)/page/hooks/useCurrentUserPages";
 import { useDeletePage } from "@/app/(dashboard)/page/hooks/useDeletePage";
 import { useMakeTrashPage } from "@/app/(dashboard)/page/hooks/useMakeTrashPage";
 import { getUser } from "@/redux_store/slices/authSlice";
@@ -35,38 +34,6 @@ const TrashWindow: React.FC = () => {
   const handleCancel = () => {
     setIsModalOpen(false);
   };
-
-  // const [deletedDocuments, setDeletedDocuments] = useState<DeletedDocument[]>([]);
-  // useEffect(() => {
-  //   dispatch(fetchDeletedDocuments(user._id));
-  // }, [dispatch, user._id]);
-
-  // const handleRestore = async (documentId: string) => {
-  //   try {
-  //     const res = await axios.put(
-  //       `http://localhost:3001/document/restoreDocument/${documentId}`
-  //     );
-  //     dispatch(fetchNotes(user._id));
-  //     dispatch(fetchDeletedDocuments(user._id));
-  //   } catch (error) {
-  //     console.error("Error restoring document:", error);
-  //   }
-  // };
-
-  // const permenantDeleteDocument = async () => {
-  //   try {
-  //     const res = await axios.delete(
-  //       `http://localhost:3001/document/permanentDeleteDocument/${documentIdToDelete}`
-  //     );
-  //     console.log("res : ", res);
-  //     dispatch(fetchNotes(user._id));
-  //     dispatch(fetchDeletedDocuments(user._id));
-  //   } catch (error) {
-  //     console.error("Error deleting document:", error);
-  //   } finally {
-  //     setConfirmDialogOpen(false);
-  //   }
-  // };
 
   const trashedPages = pages?.filter((d: any) => d?.isTrashed) || [];
 
