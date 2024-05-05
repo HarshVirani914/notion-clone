@@ -1,12 +1,13 @@
 "use client";
-import { update } from "@/redux_store/slices/authSlice";
+import { useCurrentUser } from "@/modules/hooks";
 import { Button, Grid, TextField } from "@mui/material";
 import axios from "axios";
 import { useFormik } from "formik";
 import { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { updateFormSchema } from "./updateProfileSchema";
 import Modal from "./userModal";
+import { updateCurrentUser } from "@/store/features/auth";
 
 interface UserProfile {
   username: string;
@@ -25,7 +26,7 @@ const UserProfileModal: React.FC<UserProfileModalProps> = ({
   isOpen,
   onClose,
 }) => {
-  const user = useSelector((state: any) => state.auth.user);
+  const { user } = useCurrentUser();
   const dispatch = useDispatch();
   const [previewImage, setPreviewImage] = useState<string | null>(
     user?.profile_image || null
@@ -78,7 +79,7 @@ const UserProfileModal: React.FC<UserProfileModalProps> = ({
       console.log("update res : ", res.data);
       const current_user = res.data;
       if (res.data) {
-        dispatch(update({ user: current_user }));
+        dispatch(updateCurrentUser({ user: current_user }));
         window.location.href = "/";
       }
     } catch (err) {

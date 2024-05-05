@@ -1,4 +1,4 @@
-import { useCurrentUser } from "@/app/(dashboard)/page/hooks/useCurrentUser";
+import { useCurrentUser } from "@/modules/hooks/useCurrentUser";
 import { useAuthenticated } from "@/app/(dashboard)/page/hooks/useIsauthenticate";
 import { ModeToggle } from "@/components/mode-toggle";
 import { Spinner } from "@/components/spinner";
