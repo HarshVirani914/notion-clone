@@ -5,13 +5,13 @@ import { Block } from "@blocknote/core";
 import "@blocknote/core/fonts/inter.css";
 import { BlockNoteView, useCreateBlockNote } from "@blocknote/react";
 import "@blocknote/react/style.css";
-import { Publish, Share } from "@mui/icons-material";
+import { Share } from "@mui/icons-material";
 import { Button, IconButton } from "@mui/material";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Cover } from "../_components/cover";
 import { useUpdatePage } from "./hooks/useUpdatePage";
-// import "./styles.css";
+import { Publish } from "../_components/publish";
 
 function Editor() {
   const searchParams = useSearchParams();
@@ -88,15 +88,9 @@ function Editor() {
     return "Page not found in your library. Please create a new page.";
   }
 
-  // function handlePublish(event: MouseEvent<HTMLButtonElement, MouseEvent>): void {
-  //   throw new Error("Function not implemented.");
-  // }
-
   function handleShare(event: any): void {
-    throw new Error("Function not implemented.");
+    console.log("Share clicked");
   }
-
-  console.log("page*************", page);
 
   return (
     <>

@@ -1,5 +1,5 @@
-// components/TrashWindow.tsx
 "use client";
+
 import { useDeletePage } from "@/app/(dashboard)/page/hooks/useDeletePage";
 import { useMakeTrashPage } from "@/app/(dashboard)/page/hooks/useMakeTrashPage";
 import { getUser } from "@/redux_store/slices/authSlice";
@@ -93,13 +93,6 @@ const TrashWindow: React.FC = () => {
           ) : (
             <p>No deleted items</p>
           )}
-          {/* {confirmDialogOpen && (
-            <ConfirmationDialog
-              open={confirmDialogOpen}
-              handleClose={() => setConfirmDialogOpen(false)}
-              handleConfirm={permenantDeleteDocument}
-            />
-          )} */}
         </ul>
       </Modal>
     </>

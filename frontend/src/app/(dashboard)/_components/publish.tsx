@@ -12,16 +12,12 @@ import { Check, Copy, Globe } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import { useState } from "react";
 
-// interface PublishProps {
-//     initialData: Doc<"documents">
-// };
-
 export const Publish = ({ id }: { id: string }) => {
   const searchParams = useSearchParams();
 
   const [isPublished, setIsPublished] = useState(false);
 
-  const { page } = useUpdatePage(searchParams.get("id") || "");
+  const { page } = useUpdatePage(id);
 
   const origin = useOrigin();
 
@@ -34,33 +30,11 @@ export const Publish = ({ id }: { id: string }) => {
   const onPublish = () => {
     setIsSubmitting(true);
     setIsPublished(true);
-    // const promise = update({
-    //     id: initialData._id,
-    //     isPublished: true,
-    // })
-    //     .finally(() => setIsSubmitting(false));
-
-    // toast.promise(promise, {
-    //     loading: "Publishing...",
-    //     success: "Note published",
-    //     error: "Failed to publish note.",
-    // });
   };
 
   const onUnpublish = () => {
     setIsSubmitting(true);
     setIsPublished(false);
-    // const promise = update({
-    //     id: initialData._id,
-    //     isPublished: false,
-    // })
-    //     .finally(() => setIsSubmitting(false));
-
-    // toast.promise({
-    //     loading: "Unpublishing...",
-    //     success: "Note unpublished",
-    //     error: "Failed to unpublish note.",
-    // });
   };
 
   const onCopy = () => {
