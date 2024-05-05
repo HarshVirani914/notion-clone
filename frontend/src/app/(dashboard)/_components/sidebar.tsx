@@ -17,7 +17,7 @@ import { useMemo } from "react";
 import { BsTrash } from "react-icons/bs";
 import { useDispatch } from "react-redux";
 import { ToastContainer } from "react-toastify";
-import TrashWindow from "./trashWindow";
+import TrashWindow from "./TrashWindow";
 
 const Sidebar: React.FC = () => {
   const router = useRouter();

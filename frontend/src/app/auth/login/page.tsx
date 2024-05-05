@@ -1,88 +1,23 @@
 "use client";
+import { Logo } from "@/app/(marketing)/_components/logo";
+import { useLogin } from "@/modules/auth/login/hooks";
 import { useFormik } from "formik";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import React from "react";
-import { loginFormDataType } from "../schema_datatype";
-import { loginFormSchema } from "./loginFormSchema";
-// import { authenticate } from '@/app/api/user_api';
-import { Bounce, toast, ToastContainer } from "react-toastify";
+import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-// import { useDispatch, useSelector } from 'react-redux';
-// import { authenticate } from '@/app/api/user_api';
-import { useDispatch } from "react-redux";
-// import { useAuth } from '../utils/authContext';
-import { Logo } from "@/app/(marketing)/_components/logo";
-import { login } from "@/redux_store/slices/authSlice";
-import apiService from "./authapi_service";
-
-// import { authenticate } from '@/Store/actions/setUser';
+import { loginFormSchema } from "./loginFormSchema";
 
 const LoginForm: React.FC = () => {
-  // const { login } = useAuth();
-  const router = useRouter();
-  const dispatch = useDispatch();
-  // const { isLoggedIn, setIsLoggedIn } = useAuth();
-  const formInitialValues: loginFormDataType = {
-    email: "",
-    password: "",
-  };
+  const { handleSubmit, initialValues } = useLogin();
 
-  // const logindata = useSelector((state)=>state)
-  // console.log(logindata)
   const formik = useFormik({
-    initialValues: formInitialValues,
+    initialValues,
     validationSchema: loginFormSchema,
     onSubmit: (values) => {
-      // console.log('hello')
-      // console.log(values)
-      // createUser(values}
       handleSubmit(values);
     },
   });
-
-  // const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-  const handleSubmit = async (loginUser: loginFormDataType) => {
-    console.log(loginUser);
-
-    // const data = new FormData(loginUser);
-    const email: string = loginUser.email?.toString() || "";
-    // console.log("email : "+email);
-    const password = loginUser.password?.toString() || "";
-
-    // middleware();
-    // const isAuthenticated =  await dispatch(authenticate({email,password}));
-    const response = await apiService.post(
-      "http://localhost:3001/auth/login",
-      JSON.stringify({ email, password })
-    );
-
-    console.log("res : ", response);
-
-    if (response.token) {
-      const token = response.token;
-      const current_user = response.user;
-
-      console.log("cur user : ", current_user, token);
-      toast.success("Login Successfull");
-
-      dispatch(login({ user: current_user, token: token }));
-      window.location.href = "/";
-    } else {
-      toast.error("Invalid User", {
-        position: "top-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-        transition: Bounce,
-      });
-      // alert("Invalid user");
-    }
-  };
 
   return (
     <>

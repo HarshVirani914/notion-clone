@@ -9,10 +9,6 @@ export const pageApi = baseAPI.injectEndpoints({
         try {
           const { data } = await queryFulfilled;
 
-          // if (data) {
-          //   dispatch(addPage(data));
-          // }
-
           return data;
         } catch (e) {
           console.log("error while fetching page", e);

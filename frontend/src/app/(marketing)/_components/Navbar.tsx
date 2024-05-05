@@ -5,7 +5,6 @@ import { Spinner } from "@/components/spinner";
 import { Button } from "@/components/ui/button";
 import { useScrollTop } from "@/hooks/use-scroll-top";
 import { cn } from "@/lib/utils";
-import { logout } from "@/redux_store/slices/authSlice";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import EditIcon from "@mui/icons-material/Edit";
 import Avatar from "@mui/material/Avatar";
@@ -16,6 +15,7 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Logo } from "./logo";
 import UserProfileModal from "./userProfile/userProfile";
+import { removeCurrentUser } from "@/store/features/auth";
 
 export const Navbar = () => {
   const dispatch = useDispatch();
@@ -106,7 +106,7 @@ export const Navbar = () => {
                 {isAuthenticated && (
                   <button
                     onClick={() => {
-                      dispatch(logout());
+                      dispatch(removeCurrentUser());
                     }}
                   >
                     Logout

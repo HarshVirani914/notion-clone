@@ -1,8 +1,15 @@
-import { useLoginMutation } from "@/store/features/auth";
-import { loginSchema } from "../schema/loginSchema";
+import { setCurrentUser, useLoginMutation } from "@/store/features/auth";
+import { loginSchema } from "../schema";
+import AuthToken from "@/lib/AuthToken";
+import { useDispatch } from "react-redux";
+import { useRouter } from "next/navigation";
 
 export const useLogin = () => {
   const [login, { isLoading, error }] = useLoginMutation({});
+
+  const dispatch = useDispatch();
+
+  const router = useRouter();
 
   const handleSubmit = async (input: Record<string, string>) => {
     try {
@@ -11,11 +18,13 @@ export const useLogin = () => {
         stripUnknown: true,
       });
 
-      const response = await login(sanitizeInput);
+      const response: any = await login(sanitizeInput);
 
-      // TODO: Redirect to dashboard on successful login
+      AuthToken.set(response?.data?.token);
 
-      // TODO: Set token
+      dispatch(setCurrentUser(response?.data?.user));
+
+      router.push("/");
 
       console.log("[Login User] [Response]:", response);
     } catch (error: any) {

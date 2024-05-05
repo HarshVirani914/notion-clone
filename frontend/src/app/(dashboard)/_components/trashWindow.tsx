@@ -2,7 +2,7 @@
 
 import { useDeletePage } from "@/app/(dashboard)/page/hooks/useDeletePage";
 import { useMakeTrashPage } from "@/app/(dashboard)/page/hooks/useMakeTrashPage";
-import { getUser } from "@/redux_store/slices/authSlice";
+import { useCurrentUser } from "@/modules/hooks";
 import { getPagesByUserId } from "@/store/features/page";
 import RestorePageIcon from "@mui/icons-material/RestorePage";
 import { Modal } from "antd";
@@ -13,7 +13,7 @@ import { useSelector } from "react-redux";
 const TrashWindow: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const user = useSelector(getUser);
+  const { user } = useCurrentUser();
 
   const pagesStore = useSelector((state: any) => state);
 
