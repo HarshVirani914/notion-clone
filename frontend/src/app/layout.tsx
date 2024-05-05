@@ -5,11 +5,10 @@ import { Inter } from "next/font/google";
 import { Provider } from "react-redux";
 import "./globals.css";
 
-import { persistor, store } from "@/redux_store/store";
+import { persistor, store } from "@/store/store";
 import React from "react";
 import { PersistGate } from "redux-persist/integration/react";
 import { ModalProvider } from "@/components/providers/modal-provider";
-// import { persistor, store } from "@/redux_store/store";
 const inter = Inter({ subsets: ["latin"] });
 
 export default function RootLayout({
