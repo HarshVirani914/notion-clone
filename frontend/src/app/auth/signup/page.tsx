@@ -14,7 +14,6 @@ const SignUpForm: React.FC = () => {
     validationSchema,
     onSubmit: handleSubmit,
   });
-  console.log(formik.errors);
 
   return (
     <>
@@ -25,7 +24,7 @@ const SignUpForm: React.FC = () => {
             src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600"
             alt="Your Company"
           />
-          <h2 className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
+          <h2 className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-white">
             Sign Up to your account
           </h2>
         </div>
@@ -39,7 +38,7 @@ const SignUpForm: React.FC = () => {
             <div>
               <label
                 htmlFor="username"
-                className="block text-sm font-medium leading-6 text-gray-900"
+                className="block text-sm font-medium leading-6 text-white"
               >
                 Username
               </label>
@@ -52,7 +51,7 @@ const SignUpForm: React.FC = () => {
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                   required
-                  className="block pl-2 w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                  className="block pl-2 w-full rounded-md border-0 py-1.5 text-white shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 />
                 {formik.errors.username && formik.touched.username ? (
                   <p className="text-red-700">{formik.errors.username}</p>
@@ -63,7 +62,7 @@ const SignUpForm: React.FC = () => {
             <div>
               <label
                 htmlFor="email"
-                className="block text-sm  font-medium leading-6 text-gray-900"
+                className="block text-sm  font-medium leading-6 text-white"
               >
                 Email address
               </label>
@@ -77,7 +76,7 @@ const SignUpForm: React.FC = () => {
                   onBlur={formik.handleBlur}
                   autoComplete="email"
                   required
-                  className="block w-full pl-2 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                  className="block w-full pl-2 rounded-md border-0 py-1.5 text-white shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 />
                 {formik.errors.email && formik.touched.email ? (
                   <p className="text-red-700">{formik.errors.email}</p>
@@ -89,7 +88,7 @@ const SignUpForm: React.FC = () => {
               <div className="flex items-center justify-between">
                 <label
                   htmlFor="password"
-                  className="block text-sm font-medium leading-6 text-gray-900"
+                  className="block text-sm font-medium leading-6 text-white"
                 >
                   Password
                 </label>
@@ -104,7 +103,7 @@ const SignUpForm: React.FC = () => {
                   onBlur={formik.handleBlur}
                   autoComplete="current-password"
                   required
-                  className="block w-full pl-2 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                  className="block w-full pl-2 rounded-md border-0 py-1.5 text-white shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 />
                 {formik.errors.password && formik.touched.password ? (
                   <p className="text-red-700">{formik.errors.password}</p>
@@ -114,7 +113,7 @@ const SignUpForm: React.FC = () => {
               <div className="mt-2">
                 <label
                   htmlFor="password"
-                  className="block text-sm font-medium leading-6 text-gray-900"
+                  className="block text-sm font-medium leading-6 text-white"
                 >
                   Confirm Password
                 </label>
@@ -125,7 +124,7 @@ const SignUpForm: React.FC = () => {
                   value={formik.values.confirm_password}
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
-                  className="block w-full pl-2 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                  className="block w-full pl-2 rounded-md border-0 py-1.5 text-white shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 />
                 {formik.errors.confirm_password &&
                 formik.touched.confirm_password ? (
@@ -138,7 +137,7 @@ const SignUpForm: React.FC = () => {
               <div className="mt-2">
                 <label
                   htmlFor="password"
-                  className="block text-sm font-medium leading-6 text-gray-900"
+                  className="block text-sm font-medium leading-6 text-white"
                 >
                   Select Profile
                 </label>
@@ -148,26 +147,32 @@ const SignUpForm: React.FC = () => {
                   type="file"
                   onChange={(event) => {
                     console.log("testtt---", event.target.files?.[0]);
+
                     const files = event.currentTarget.files;
+
                     if (files && files.length > 0) {
                       console.log("data---", files);
+
                       const fileName = files?.[0];
-                      console.log(fileName);
-                      formik.setFieldValue(
-                        "profile_image",
-                        event.currentTarget.files?.[0]
-                      );
+                      console.log("fileName", fileName);
+
+                      formik.setFieldValue("profile_image", fileName);
                     } else {
                       // Handle case where no files are selected
                     }
                   }}
                   onBlur={formik.handleBlur}
-                  className="block w-full pl-2 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                  className="block w-full pl-2 rounded-md border-0 py-1.5 text-white shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 />
               </div>
             </div>
 
-            <Button type="submit" variant="ghost" size="sm">
+            <Button
+              type="submit"
+              className="flex w-full justify-center rounded-md bg-indigo-500 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+              variant="ghost"
+              size="lg"
+            >
               Sign Up
             </Button>
             <ToastContainer />

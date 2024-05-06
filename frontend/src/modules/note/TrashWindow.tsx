@@ -1,7 +1,7 @@
 "use client";
 
-import { useDeletePage } from "@/app/(dashboard)/page/hooks/useDeletePage";
-import { useMakeTrashPage } from "@/app/(dashboard)/page/hooks/useMakeTrashPage";
+import { useDeletePage } from "@/modules/editor/hooks/useDeletePage";
+import { useMakeTrashPage } from "@/modules/editor/hooks/useMakeTrashPage";
 import { useCurrentUser } from "@/modules/hooks";
 import { getPagesByUserId } from "@/store/features/page";
 import RestorePageIcon from "@mui/icons-material/RestorePage";

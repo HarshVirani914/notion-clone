@@ -1,6 +1,6 @@
 "use client";
 
-import { useUpdatePage } from "@/app/(dashboard)/page/hooks/useUpdatePage";
+import { useUpdatePage } from "@/modules/editor/hooks/useUpdatePage";
 import { Button } from "@/components/ui/button";
 import {
   Popover,
@@ -9,12 +9,9 @@ import {
 } from "@/components/ui/popover";
 import { useOrigin } from "@/hooks/use-origin";
 import { Check, Copy, Globe } from "lucide-react";
-import { useSearchParams } from "next/navigation";
 import { useState } from "react";
 
 export const Publish = ({ id }: { id: string }) => {
-  const searchParams = useSearchParams();
-
   const [isPublished, setIsPublished] = useState(false);
 
   const { page } = useUpdatePage(id);
@@ -24,7 +21,7 @@ export const Publish = ({ id }: { id: string }) => {
   const [copied, setCopied] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const url = `${origin}/preview?id=${page._id}`;
+  const url = `${origin}/preview?id=${page?._id}`;
 
   const onPublish = () => {
     setIsSubmitting(true);
@@ -50,7 +47,7 @@ export const Publish = ({ id }: { id: string }) => {
       <PopoverTrigger asChild>
         <Button size="sm" variant="ghost">
           Publish
-          {page.isPublished && <Globe className="text-sky-500 w-4 h-4 ml-2" />}
+          {page?.isPublished && <Globe className="text-sky-500 w-4 h-4 ml-2" />}
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-72" align="end" alignOffset={8} forceMount>

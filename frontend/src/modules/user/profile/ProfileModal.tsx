@@ -1,47 +1,26 @@
 "use client";
 import { useCurrentUser } from "@/modules/hooks";
 import { useUpdateUser } from "@/modules/user/hooks";
-import { updateCurrentUser } from "@/store/features/auth";
-import { Button, Grid, TextField } from "@mui/material";
+import { Grid, TextField } from "@mui/material";
 import { useFormik } from "formik";
 import { useState } from "react";
-import { useDispatch } from "react-redux";
-import { updateFormSchema } from "./updateProfileSchema";
-import Modal from "./userModal";
+import { updateFormSchema } from "./schema/updateFormSchema";
+import Modal from "@/components/modals/Modal";
+import { Button } from "@/components/ui/button";
 
-interface UserProfile {
-  username: string;
-  email: string;
-  password: string;
-  confirm_password: string;
-  profile_image: File | null;
-}
-
-interface UserProfileModalProps {
+interface ProfileModalProps {
   isOpen: boolean;
   onClose: () => void;
 }
 
-const UserProfileModal: React.FC<UserProfileModalProps> = ({
-  isOpen,
-  onClose,
-}) => {
+const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose }) => {
   const { user } = useCurrentUser();
-  const dispatch = useDispatch();
 
-  const { handleUpdateUser } = useUpdateUser();
+  const { handleUpdateUser, initialValues } = useUpdateUser();
 
   const [previewImage, setPreviewImage] = useState<string | null>(
     user?.profile_image || null
   );
-  console.log("user-------", user);
-  const formInitialValues: UserProfile = {
-    username: "",
-    email: "",
-    password: "",
-    confirm_password: "",
-    profile_image: null,
-  };
 
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.currentTarget.files;
@@ -53,44 +32,19 @@ const UserProfileModal: React.FC<UserProfileModalProps> = ({
   };
 
   const formik = useFormik({
-    initialValues: formInitialValues,
+    initialValues: initialValues,
     validationSchema: updateFormSchema,
-    onSubmit: (values) => {
-      console.log("update values ------", values);
-      const formData = new FormData();
-      formData.append("username", values.username);
-      formData.append("email", values.email);
-      formData.append("password", values.password);
-      formData.append("confirm_password", values.confirm_password);
-      formData.append("file", values.profile_image as File);
-      // console.log("form data : ",formData);
-      //   console.log([...formData.entries()]);
-      try {
-        updateUser(formData); // Pass the FormData object to createUser function
-      } catch (error) {
-        console.error("Error signing up:", error);
-      }
+    onSubmit: () => {
+      console.log("formik.values", formik.values);
+      handleUpdateUser({ id: user?.id, user: formik.values });
+      onClose();
     },
   });
-  console.log(formik.errors);
-  const updateUser = async (formData: any) => {
-    try {
-      const res = await handleUpdateUser({ id: user._id, ...formData });
-      console.log("update res : ", res.data);
-      const current_user = res.data;
-      if (res.data) {
-        dispatch(updateCurrentUser({ user: current_user }));
-        window.location.href = "/";
-      }
-    } catch (err) {
-      console.log(err);
-    }
-  };
 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <Grid container direction="column" alignItems="center" spacing={0}>
-        <form encType="multipart/form-data">
+        <form encType="multipart/form-data" onSubmit={formik.handleSubmit}>
           <Grid item>
             <label htmlFor="profile_image">
               <img
@@ -108,7 +62,7 @@ const UserProfileModal: React.FC<UserProfileModalProps> = ({
               onBlur={formik.handleBlur}
             />
           </Grid>
-          <Grid item component="form">
+          <Grid item>
             <Grid container direction="column" spacing={2}>
               <Grid item>
                 <TextField
@@ -156,10 +110,11 @@ const UserProfileModal: React.FC<UserProfileModalProps> = ({
               </Grid>
               <Grid item>
                 <Button
-                  onClick={formik.handleSubmit}
                   type="submit"
-                  variant="contained"
-                  color="primary"
+                  className="flex w-full justify-center rounded-md bg-indigo-500 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                  variant="ghost"
+                  size="lg"
+                  onClick={() => formik.handleSubmit()}
                 >
                   Save Changes
                 </Button>
@@ -172,4 +127,4 @@ const UserProfileModal: React.FC<UserProfileModalProps> = ({
   );
 };
 
-export default UserProfileModal;
+export default ProfileModal;

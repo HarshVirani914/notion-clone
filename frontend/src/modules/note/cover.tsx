@@ -3,7 +3,7 @@
 import { ImageIcon, X } from "lucide-react";
 import Image from "next/image";
 
-import { useUpdatePage } from "@/app/(dashboard)/page/hooks/useUpdatePage";
+import { useUpdatePage } from "@/modules/editor/hooks/useUpdatePage";
 import { Button } from "@/components/ui/button";
 import { useCoverImage } from "@/hooks/use-cover-image";
 import { cn } from "@/lib/utils";

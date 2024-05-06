@@ -1,6 +1,6 @@
 import { useLazyGetPagesQuery } from "@/store/features/page";
 import { useSelector } from "react-redux";
-import { useCurrentUser } from "../../../../modules/hooks/useCurrentUser";
+import { useCurrentUser } from "../../hooks/useCurrentUser";
 
 export const useLazyCurrentUserPages = () => {
   const { user } = useCurrentUser();

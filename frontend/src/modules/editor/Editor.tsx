@@ -8,9 +8,11 @@ import "@blocknote/react/style.css";
 import { Share } from "@mui/icons-material";
 import { Button, IconButton } from "@mui/material";
 import { useEffect, useState } from "react";
-import { Cover } from "../_components/cover";
-import { Publish } from "../_components/publish";
+import { Cover } from "../note/Cover";
+import { Publish } from "../note/Publish";
 import { useUpdatePage } from "./hooks/useUpdatePage";
+import Modal from "@/components/modals/Modal";
+import { SharePage } from "../note";
 
 interface EditorProps {
   pageId: string;
@@ -19,9 +21,15 @@ interface EditorProps {
 const Editor: React.FC<EditorProps> = ({ pageId }) => {
   const coverImage = useCoverImage();
 
+  useEffect(() => {
+    coverImage.setPageId(pageId);
+  }, [pageId]);
+
   const { page, handleUpdatePage } = useUpdatePage(pageId || "");
 
   const [pageName, setPageName] = useState(page?.name || "");
+
+  const [isShareModalOpen, setIsShareModalOpen] = useState(false);
 
   async function uploadFile(file: File) {
     const body = new FormData();
@@ -88,14 +96,23 @@ const Editor: React.FC<EditorProps> = ({ pageId }) => {
   }
 
   function handleShare(event: any): void {
-    console.log("Share clicked");
+    event.preventDefault();
+    setIsShareModalOpen(true);
   }
 
   return (
     <>
-      <div className="editor-container w-full h-full">
-        <div className="flex mb-4">
-          <p>{pageName}</p>
+      <div className="editor-container w-full h-screen">
+        <div className="flex flex-row justify-between items-center sticky w-full h-14 border border-b-gray-400">
+          <div className="flex text-center content-center self-center">
+            <p className="align-middle text-justify p-2">{pageName}</p>
+          </div>
+          <div className="flex gap-2">
+            <Publish id={page._id} />
+            <IconButton onClick={handleShare}>
+              <Share />
+            </IconButton>
+          </div>
         </div>
         <Cover pageId={pageId!} preview url={page?.coverImage} />
         <div>
@@ -112,19 +129,20 @@ const Editor: React.FC<EditorProps> = ({ pageId }) => {
             add cover
           </Button>
         </div>
-        <div className="w-[40%] fixed">
+        <div className="">
           <BlockNoteView
             editor={editor}
             onChange={() => handleSubmit(editor.document)}
             data-changing-font-demo
           />
         </div>
-      </div>
-      <div className="fixed top-4 right-4 flex gap-2">
-        <Publish id={page._id} />
-        <IconButton onClick={handleShare}>
-          <Share />
-        </IconButton>
+
+        <Modal
+          isOpen={isShareModalOpen}
+          onClose={() => setIsShareModalOpen(false)}
+        >
+          <SharePage />
+        </Modal>
       </div>
     </>
   );

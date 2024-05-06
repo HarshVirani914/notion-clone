@@ -4,7 +4,7 @@ import { useCurrentUser } from "@/modules/hooks";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import { Button } from "@mui/material";
 import Link from "next/link";
-import { useCreatePage } from "./hooks/useCreatePage";
+import { useCreatePage } from "../../../modules/editor/hooks/useCreatePage";
 
 const page = () => {
   const { user } = useCurrentUser();

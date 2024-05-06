@@ -9,6 +9,7 @@ import { persistor, store } from "@/store/store";
 import React from "react";
 import { PersistGate } from "redux-persist/integration/react";
 import { ModalProvider } from "@/components/providers/modal-provider";
+import { Navbar } from "@/modules/home/Navbar";
 const inter = Inter({ subsets: ["latin"] });
 
 export default function RootLayout({

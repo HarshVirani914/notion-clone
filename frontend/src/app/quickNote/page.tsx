@@ -1,4 +1,4 @@
-import { QuickNote } from "@/app/(dashboard)/_components/quickNote/QuickNote";
+import { QuickNote } from "@/modules/note/quickNote/QuickNote";
 import MainLayout from "@/app/(dashboard)/layout";
 import React from "react";
 

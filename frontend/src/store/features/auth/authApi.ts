@@ -12,6 +12,8 @@ export const authApi = baseAPI.injectEndpoints({
         try {
           const { data } = await queryFulfilled;
 
+          console.log("data", data)
+
           return data;
         } catch (e) {
           console.log("error while creating user", e);

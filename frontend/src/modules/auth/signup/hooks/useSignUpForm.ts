@@ -15,8 +15,12 @@ export const useSignUp = () => {
     try {
       const sanitizeInput = signUpSchema.cast(input, {
         assert: false,
-        stripUnknown: true,
+        stripUnknown: false,
       });
+
+      sanitizeInput.profile_image = input.profile_image;
+
+      console.log("[SignUp User] [Input]:", sanitizeInput)
 
       const response: any = await signUp(sanitizeInput);
 
@@ -29,9 +33,9 @@ export const useSignUp = () => {
 
       }
 
-      console.log("[SingUp User] [Response]:", response);
+      console.log("[SignUp User] [Response]:", response);
     } catch (error: any) {
-      console.log(`[SingUp User] [Error]: ${error?.message}`);
+      console.log(`[SignUp User] [Error]: ${error?.message}`);
     }
   };
 

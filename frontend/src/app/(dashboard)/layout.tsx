@@ -1,7 +1,7 @@
 "use client";
 import { redirect } from "next/navigation";
 import { useCurrentUser } from "../../modules/hooks/useCurrentUser";
-import Sidebar from "./_components/sidebar";
+import { Sidebar } from "@/modules/note";
 
 const MainLayout = ({ children }: { children: React.ReactNode }) => {
   const { user } = useCurrentUser();

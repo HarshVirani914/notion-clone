@@ -1,3 +1,4 @@
+"use client";
 import { ModeToggle } from "@/components/mode-toggle";
 import { Spinner } from "@/components/spinner";
 import { Button } from "@/components/ui/button";
@@ -13,20 +14,17 @@ import { useEffect, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { Logo } from "./logo";
-import UserProfileModal from "./userProfile/userProfile";
+import UserProfileModal from "../user/profile/ProfileModal";
+import { Logo } from "./Logo";
 
 export const Navbar = () => {
   const dispatch = useDispatch();
   const { user } = useCurrentUser();
 
-  console.log("user navbar ------", user);
-
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
 
-  console.log("user navbar ------", user);
   const handleProfileClick = () => {
     setIsDropdownOpen(!isDropdownOpen);
   };
@@ -58,7 +56,7 @@ export const Navbar = () => {
   return (
     <div
       className={cn(
-        "z-50 bg-background dark:bg-[#1F1F1F] fixed top-0 flex items-center w-full p-6",
+        "z-50 bg-background dark:bg-[#1F1F1F] top-0 flex items-center w-full p-4 sticky",
         scrolled && "border-b shadow-sm"
       )}
     >
@@ -126,7 +124,6 @@ export const Navbar = () => {
           onClose={() => setIsProfileModalOpen(false)}
         />
       </div>
-      <div></div>
     </div>
   );
 };

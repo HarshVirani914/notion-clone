@@ -1,25 +1,27 @@
 "use client";
-import { useCreatePage } from "@/app/(dashboard)/page/hooks/useCreatePage";
-import { useCurrentUserPages } from "@/app/(dashboard)/page/hooks/useCurrentUserPages";
-import { useMakeTrashPage } from "@/app/(dashboard)/page/hooks/useMakeTrashPage";
+import { useCreatePage } from "@/modules/editor/hooks/useCreatePage";
+import { useCurrentUserPages } from "@/modules/editor/hooks/useCurrentUserPages";
+import { useMakeTrashPage } from "@/modules/editor/hooks/useMakeTrashPage";
 import { useCurrentUser } from "@/modules/hooks";
 import { removeCurrentUser } from "@/store/features/auth";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import LogoutIcon from "@mui/icons-material/Logout";
 import NoteAddIcon from "@mui/icons-material/NoteAdd";
+import UserIcon from "@mui/icons-material/Person";
 import SearchIcon from "@mui/icons-material/Search";
 import SettingsIcon from "@mui/icons-material/Settings";
 import Avatar from "@mui/material/Avatar";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { BsTrash } from "react-icons/bs";
 import { useDispatch } from "react-redux";
 import { ToastContainer } from "react-toastify";
+import UserProfileModal from "../user/profile/ProfileModal";
 import TrashWindow from "./TrashWindow";
 
-const Sidebar: React.FC = () => {
+export const Sidebar: React.FC = () => {
   const router = useRouter();
   const dispatch = useDispatch();
 
@@ -30,6 +32,8 @@ const Sidebar: React.FC = () => {
   const { handleTrashPage } = useMakeTrashPage();
 
   const { handleCreatePage, isLoading } = useCreatePage();
+
+  const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
 
   const unTrashedPages = useMemo(() => {
     return pages?.filter((d: any) => !d?.isTrashed) || [];
@@ -52,9 +56,9 @@ const Sidebar: React.FC = () => {
   }
 
   return (
-    <div className="h-screen flex flex-row bg-gray-100">
-      <div className="flex flex-col w-56 mt-[-150px]  overflow-hidden">
-        <div className="flex items-center justify-center bg-slate-950 h-20 shadow-md">
+    <div className="flex flex-row bg-gray-100">
+      <div className="flex flex-col w-56">
+        <div className="flex items-center justify-center bg-slate-950 h-14 shadow-md">
           <Avatar sx={{ width: 24, height: 24 }}>H</Avatar>
           <span className="text-sm font-medium pl-4 text-white">
             {!user?.username ? "User" : user?.username}
@@ -71,7 +75,7 @@ const Sidebar: React.FC = () => {
               <input
                 type="search"
                 id="default-search"
-                className="ext-sm font-medium p-1 w-32 h-7 m-4 rounded-xl bg-gray-100"
+                className="ext-sm font-medium p-1 w-32 h-7 m-4 rounded-lg bg-gray-100"
                 placeholder="Search.."
                 required
               />
@@ -135,15 +139,15 @@ const Sidebar: React.FC = () => {
           </li>
 
           <li>
-            <a
-              href="#"
-              className="flex flex-row items-center h-12 transform hover:translate-x-2 transition-transform ease-in duration-200 text-gray-500 hover:text-gray-800"
-            >
-              <span className="inline-flex items-center justify-center h-12 w-12 text-lg text-gray-400">
-                <i className="bx bx-user"></i>
+            <div className="flex flex-row items-center h-12 transform hover:translate-x-2 transition-transform ease-in duration-200 text-gray-500 hover:text-gray-800 cursor-pointer">
+              <UserIcon className="ml-6" />
+              <span
+                className="text-sm font-medium pl-4"
+                onClick={() => setIsProfileModalOpen(true)}
+              >
+                Profile
               </span>
-              <span className="text-sm font-medium">Profile</span>
-            </a>
+            </div>
           </li>
           <li>
             <a
@@ -172,8 +176,12 @@ const Sidebar: React.FC = () => {
             </span>
           </li>
         </ul>
+
+        <UserProfileModal
+          isOpen={isProfileModalOpen}
+          onClose={() => setIsProfileModalOpen(false)}
+        />
       </div>
     </div>
   );
 };
-export default Sidebar;

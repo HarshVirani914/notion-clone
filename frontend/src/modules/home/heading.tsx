@@ -1,10 +1,8 @@
 "use client";
-import { useAuthenticated } from "@/app/(dashboard)/page/hooks/useIsauthenticate";
 import { Button } from "@/components/ui/button";
 import { useCurrentUser } from "@/modules/hooks";
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
-import { useSelector } from "react-redux";
 
 export const Heading = () => {
   const { user } = useCurrentUser();

@@ -20,13 +20,14 @@ export const useLogin = () => {
 
       const response: any = await login(sanitizeInput);
 
-      AuthToken.set(response?.data?.token);
+      if (response?.data) {
+        AuthToken.set(response?.data?.token);
 
-      dispatch(setCurrentUser(response?.data?.user));
+        dispatch(setCurrentUser(response?.data?.user));
 
-      router.push("/page");
+        router.push("/page");
+      }
 
-      console.log("[Login User] [Response]:", response);
     } catch (error: any) {
       console.log(`[Login User] [Error]: ${error?.message}`);
     }

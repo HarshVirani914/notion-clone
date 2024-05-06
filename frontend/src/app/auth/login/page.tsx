@@ -1,5 +1,5 @@
 "use client";
-import { Logo } from "@/app/(marketing)/_components/logo";
+import { Logo } from "@/modules/home/Logo";
 import { useLogin } from "@/modules/auth/login/hooks";
 import { useFormik } from "formik";
 import Link from "next/link";

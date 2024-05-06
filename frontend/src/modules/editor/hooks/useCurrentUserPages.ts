@@ -1,10 +1,10 @@
 import { useGetPagesQuery } from "@/store/features/page";
-import { useCurrentUser } from "../../../../modules/hooks/useCurrentUser";
+import { useCurrentUser } from "../../hooks/useCurrentUser";
 import { useSelector } from "react-redux";
 import { debounce } from "lodash";
 
 export const useCurrentUserPages = () => {
-  const {user} = useCurrentUser();
+  const { user } = useCurrentUser();
 
   console.log("user", user)
 
