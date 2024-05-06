@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { QuickNote } from './schema/quickNote.schema';
+import { QuickNote } from '../models/quickNote.schema';
 import { Model } from 'mongoose';
 import { CreateQuickNoteDto } from './dto/quickNote.dto';
 import OpenAI from "openai";

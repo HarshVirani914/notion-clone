@@ -2,7 +2,7 @@ import { ConflictException, Injectable, InternalServerErrorException, NotFoundEx
 import { InjectModel } from '@nestjs/mongoose';
 import { UserSignupDto } from "../auth/dto/signupDto.dto";
 import { UserLoginDto } from 'src/auth/dto/loginDto.dto';
-import { User } from './schema/user.schema';
+import { User } from '../models/user.schema';
 import * as bcrypt from 'bcryptjs';
 import { Model, ObjectId } from 'mongoose';
 import { JwtService } from '@nestjs/jwt';
@@ -11,6 +11,9 @@ import { Repository } from 'typeorm';
 import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
 import { UpdateProfileDto } from './dto/updateProfileDto.dto';
 import * as jwt from 'jsonwebtoken';
+import { CommonService } from 'src/common/common.service';
+import { BcryptService } from 'src/common/bcrypt.service';
+import { ResetPasswordDto } from './dto/resetpassword.dto';
 
 @Injectable()
 export class AuthService {
@@ -18,43 +21,48 @@ export class AuthService {
         @InjectModel(User.name)
         private userModel: Model<User>,
         private jwtService: JwtService,
-        private readonly cloudinaryService: CloudinaryService
+        private readonly cloudinaryService: CloudinaryService,
+        private readonly commonService: CommonService,
+        private readonly bcryptService: BcryptService
     ) { }
 
-    async verifyToken(token: string): Promise<boolean> {
+   verifyToken(token: string): string|object  {
         try {
-            console.log("auth service roken ----",token)
-          const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
-          // If the token is successfully verified, you can return true
-          return true;
-        } catch (error) {
-          // If verification fails, you can handle the error here
+          const decoded = jwt.verify(token, process.env.JWT_SECRET) as jwt.JwtPayload;
+
+          if (!decoded || !decoded.id) {
+            throw new Error('Invalid token');
+          }
+    
+         return decoded;
+
+              } catch (error) {
+          // Handle invalid token or other errors
           throw new UnauthorizedException('Invalid token');
         }
       }
-
+    
     async createUser(imagePath: string, userSignupDto: UserSignupDto): Promise<string> {
         try {
-            const { username, email, password, confirm_password, profile_image } = userSignupDto;
+            const { username, email, password, profile_image } = userSignupDto;
             const checkEmail = await this.userModel.findOne({ email })
             if (checkEmail) {
                 return "Email is duplicate..";
             }
-            const hashedPassword = await bcrypt.hash(password, 10);
-
-            if (password !== confirm_password) {
-                return "your password and confirm password are not same";
-            }
-            console.log('---------', userSignupDto)
+            
+            const hashedPassword = await this.bcryptService.hash(password);
 
             const image_url = await this.cloudinaryService.uploadProfileImage(imagePath)
-            console.log('---121', imagePath);
-            await this.userModel.create({
+
+            const user= await this.userModel.create({
                 username,
                 email,
                 password: hashedPassword,
                 profile_image: image_url?.url,
             });
+
+            const stripeCustomer=await this.commonService.createCustomer({email,name:username})
+            await this.userModel.updateOne({_id:user._id},{$set:{customerId:stripeCustomer.id}})
             return "user register succesfully";
         } catch (error) {
             console.log('error', error)
@@ -85,78 +93,26 @@ export class AuthService {
         }
     }
 
-    async updateProfile(imagePath: string, userId: string, updateProfileDto: UpdateProfileDto): Promise<Object> {
-        console.log(userId)
-            console.log(updateProfileDto);
+    async resetPassword(resetPasswordDto: ResetPasswordDto,currentUser): Promise<string> {
         try {
-            const { username, email, password, confirm_password, profile_image } = updateProfileDto;
+            const user = await this.userModel.findOne({ _id: currentUser.id });
 
-            console.log(userId);
-            const user = await this.userModel.findById(userId).exec();
-            if (!user) {
-                throw new NotFoundException('User not found.');
+            const isMatch = await this.bcryptService.compare(resetPasswordDto.oldPassword, user.password);
+            if (!isMatch) {
+              throw new Error('Old password is incorrect');
             }
-            const hashedPassword = await bcrypt.hash(password, 10);
+        
+            if (!user)
+                throw new Error("Invalid link: User not found");
 
-            if (password !== confirm_password) {
-                return "your password and confirm password are not same";
-            }
-            const image_url = await this.cloudinaryService.uploadProfileImage(imagePath);
-            user.profile_image = image_url?.url || profile_image; // Update profile image if new image is uploaded
-           
-            const updated_user = await this.userModel.findByIdAndUpdate(userId, { // Use findByIdAndUpdate to update existing user
-                username,
-                email,
-                password: hashedPassword,
-                profile_image: image_url?.url,
-            },{new:true});
-
-            return updated_user;
+            const hashedPassword = await this.bcryptService.hash(resetPasswordDto.newPassword);
+            user.password = hashedPassword;
+            await user.save();
+                return "User password updated successfully.";
         } catch (error) {
-            console.error('Error in updating profile: ', error);
-            throw new InternalServerErrorException('Failed to update profile');
+            throw new Error(`Failed to reset password: ${error.message}`);
         }
     }
 
-    async searchUserByName(name: string): Promise<User[]> {
-        const users = await this.userModel.find({ username: { $regex: name, $options: 'i' } }).exec();
-        if (!users || users.length === 0) {
-            throw new NotFoundException('No users found with the provided name.');
-        }
-        return users;
-    }
-
-    async fetchUsers(): Promise<User[]> {
-        try {
-            const users = await this.userModel.find({},{password:-1}).exec();
-            if (!users || users.length === 0) {
-                throw new NotFoundException('No users found.');
-            }
-            return users;
-        } catch (error) {
-            throw new InternalServerErrorException('Failed to fetch users.');
-        }
-    }
-
-    async findUserById(userId: string): Promise<User> {
-        try {
-            const user = await this.userModel.findById(userId).exec();
-            if (!user) {
-                throw new NotFoundException('User not found.');
-            }
-            return user;
-        } catch (error) {
-            throw new InternalServerErrorException('Failed to find user.');
-        }
-    }
-
-    async getUserByEmail(slug: string): Promise<User[]> {
-
-        try {
-            const users = await this.userModel.find({email:{$regex:new RegExp(`^${slug}`)}},{userId:"$_id",_id:0,email:1}); 
-            return users
-        } catch (error) {
-            throw new InternalServerErrorException('Failed to fetch users.');
-        }
-    }
+    
 }
