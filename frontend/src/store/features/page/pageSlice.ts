@@ -26,20 +26,20 @@ export const pageSlice = createSlice({
       state.pages = [action.payload, ...state.pages];
     },
     updatePage: (state, action) => {
-      const { _id, ...patch } = action.payload
+      const { _id, ...patch } = action.payload;
 
       state.pages = state.pages.map((d) => {
         if (d._id === _id) {
           return {
             ...d,
-            ...patch
-          }
+            ...patch,
+          };
         }
-        return d
+        return d;
       });
     },
     deletePage: (state, action) => {
-      console.log("action.payload", action.payload)
+      console.log("action.payload", action.payload);
       state.pages = state.pages.filter((d) => d._id !== action.payload._id);
     },
   },
@@ -50,4 +50,4 @@ export const getPagesByUserId = (state: any, userId: string) =>
 
 export const { setPages, addPage, updatePage, deletePage } = pageSlice.actions;
 
-export default pageSlice.reducer;
+export const pageReducer = pageSlice.reducer;
