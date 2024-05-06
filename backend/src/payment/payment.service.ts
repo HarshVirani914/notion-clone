@@ -5,6 +5,7 @@ import Stripe from 'stripe';
 import { Payment } from '../models/stripe.schema';
 import { InjectModel } from '@nestjs/mongoose';
 import { CommonService } from 'src/common/common.service';
+import { User } from 'src/models/user.schema';
 
 @Injectable()
 export class StripeService {
@@ -12,13 +13,16 @@ export class StripeService {
 
     constructor(private configService: ConfigService,
         @InjectModel('Payment') private paymentModel: Model<Payment>,
-        private readonly commonService: CommonService
+        private readonly commonService: CommonService,
+        @InjectModel('User') private userModel: Model<User>
     ) {}
 
-    async createCheckoutSession(): Promise<string> {
+    async createCheckoutSession(currentUser): Promise<string> {
         try {
-            
-            const session=  await this.commonService.createCheckoutSession({customerId:"cus_Q3E365HFVGBp5V",accountId:""})
+            const user=await this.userModel.findOne({_id:currentUser.id})
+
+            //TODO check if user do not have existing plan
+            const session=  await this.commonService.createCheckoutSession({customerId:user.customerId,userId:user.id})
             return session.url;
 
         } catch (error) {
@@ -58,7 +62,7 @@ export class StripeService {
   async getAllPaymentsByUserId(userId: string): Promise<Payment[]> {
     try
     {
-        return this.paymentModel.find({ userId }).exec();
+        return this.paymentModel.find({ userId })
     }
     catch(err)
     {

@@ -17,7 +17,7 @@ export class CommonService {
           });
     }
 
-    createCheckoutSession({ customerId, accountId }){
+    createCheckoutSession({ customerId, userId }){
       return this.stripeClient.checkout.sessions.create({
         success_url: this.configService.get<string>('FRONTEND_URL'),
         line_items: [{ price: this.configService.get<string>('PRICE_ID'), quantity: 1 }],
@@ -27,7 +27,7 @@ export class CommonService {
         customer: customerId,
         subscription_data: {
           metadata: {
-            accountId: accountId,
+            userId,
           },
         },
       });

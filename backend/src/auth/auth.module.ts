@@ -9,6 +9,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
 import { CommonService } from 'src/common/common.service';
+import { BcryptService } from 'src/common/bcrypt.service';
 
 
 @Module({
@@ -30,7 +31,7 @@ import { CommonService } from 'src/common/common.service';
   ],
 
   controllers: [AuthController],
-  providers: [AuthService, JwtStrategy,CloudinaryService,CommonService],
+  providers: [AuthService, JwtStrategy,CloudinaryService,CommonService,BcryptService],
   exports: [JwtStrategy, PassportModule, AuthService]
 })
 export class AuthModule {}

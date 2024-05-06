@@ -11,7 +11,10 @@ import { AuthGuard } from './jwt-auth.guard' // aa barabar chhe?
 import { extname } from 'path';
 import { UpdateProfileDto } from './dto/updateProfileDto.dto';
 import { ObjectId } from 'mongodb'; // Import ObjectId type
-
+import { ResetPasswordDto } from './dto/resetpassword.dto';
+export interface AuthenticatedRequest extends Request {
+    currentUser: any; // Update this with the type of currentUser
+  }
 
 const storage = diskStorage({
     destination: './uploads',
@@ -48,7 +51,7 @@ export class AuthController {
             sameSite: 'none',
         });
 
-        response.status(HttpStatus.OK).json({ token, user });
+      return response.status(HttpStatus.OK).json({ token, user });
     }
 
     @Get('/test')
@@ -62,58 +65,9 @@ export class AuthController {
         }
     }
 
-    @Put('/update/:userId')  
+    @Post('/reset-password')
     @UseGuards(AuthGuard)
-    @UseInterceptors(FileInterceptor('file'))
-    async updateProfile(
-        @Body() updateProfileDto: UpdateProfileDto,
-        @UploadedFile() file: Express.Multer.File,
-        @Req() req:Request
-    ): Promise<Object> {
-        try {
-            const currentUser = req['currentUser']; // Access current user from request context
-            if (!file) {
-                throw new HttpException('No file uploaded', HttpStatus.BAD_REQUEST);
-            }
-            return this.authService.updateProfile(file.path, updateProfileDto,currentUser);
-        } catch (error) {
-            console.error('Error in updating profile: ', error);
-            throw new HttpException('Failed to update profile', HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-
-    @Get('/search')
-    @UseGuards(AuthGuard)
-    async searchUser(@Query('name') name: string,        @Req() req:Request): Promise<User[]> {
-        try {
-            console.log(name);
-            const users = await this.authService.searchUserByName(name);
-            return users;
-        } catch (error) {
-            if (error instanceof NotFoundException) {
-                throw new NotFoundException('No users found with the provided name.');
-            }
-            throw error;
-        }
-    }
-
-    @Get('/fetchUsers')
-    @UseGuards(AuthGuard) // Guard to protect this endpoint ha to aaya  AuthGuard rakhje me je mokalyu e ane frontend side thi jyare api call karavde tyare credentials includes kari deje 
-    async fetchUsers(        @Req() req:Request): Promise<User[]> {
-        try {
-            return await this.authService.fetchUsers();
-        } catch (error) {
-            throw new HttpException('Failed to fetch users', HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-
-    @Get('/getUserByEmail')
-    @UseGuards(AuthGuard) // Guard to protect this endpoint ha to aaya  AuthGuard rakhje me je mokalyu e ane frontend side thi jyare api call karavde tyare credentials includes kari deje 
-    async getUserByEmail(@Query('slug') slug: string,        @Req() req:Request): Promise<User[]> {
-        try {
-            return await this.authService.getUserByEmail(slug);
-        } catch (error) {
-            throw new HttpException('Failed to fetch users', HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+    async resetPassword(@Body() resetPasswordDto: ResetPasswordDto,@Req() { currentUser }: AuthenticatedRequest): Promise<void> {
+      await this.authService.resetPassword(resetPasswordDto,currentUser);
     }
 }

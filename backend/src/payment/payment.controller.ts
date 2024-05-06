@@ -1,9 +1,11 @@
-import { Body, Controller, Get, HttpStatus, Param, Post, Res } from '@nestjs/common';
-import { StripeService } from './stripe.service';
+import { Body, Controller, Get, HttpStatus, Param, Post, Req, Res, UseGuards } from '@nestjs/common';
+import { StripeService } from './payment.service';
 import { Response } from 'express';
 import Stripe from 'stripe';
 import { Payment } from '../models/stripe.schema';
 import { CommonService } from 'src/common/common.service';
+import { AuthGuard } from 'src/auth/jwt-auth.guard';
+import { AuthenticatedRequest } from 'src/auth/auth.controller';
 
 
 @Controller('payment')
@@ -11,10 +13,11 @@ export class PaymentController {
     constructor(private readonly stripeService: StripeService) { }
 
     @Post()
-    async createCheckoutSession(@Body() body: any, @Res() res: Response) {
+    @UseGuards(AuthGuard)
+    async createCheckoutSession(@Body() body: any, @Res() res: Response,@Req() { currentUser }: AuthenticatedRequest) {
         try {
 
-            return this.stripeService.createCheckoutSession()
+            return this.stripeService.createCheckoutSession(currentUser)
         }
         catch (err) {
             console.log(err)

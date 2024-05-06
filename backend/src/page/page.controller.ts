@@ -1,34 +1,18 @@
 import { Body, Controller, Delete, Get, HttpException, HttpStatus, Param, Post, Put, Req, UseGuards } from '@nestjs/common';
 import { PageService } from './page.service';
-import { CreatePageDto } from './dto/CreatePage.dto';
+import { CreatePageDto, UpdatePageDto } from './dto/CreatePage.dto';
 import { AuthGuard } from 'src/auth/jwt-auth.guard';
+import { AuthenticatedRequest } from 'src/auth/auth.controller';
 
 @Controller('page')
 export class PageController {
   constructor(private pageService: PageService) { }
 
-  @Post('/:userId')
-  @UseGuards(AuthGuard)
-  async addPage(@Body() pages: Array<{ id: string, type: string, content: string, children: Array<{ id: string, type: string, content: string }> }>, @Param('userId') userId: string) {
-    try {
-      console.log("Pages received:", pages);
-      console.log("User ID:", userId);
-
-      const newPage = await this.pageService.addPage(pages, userId);
-      console.log("New Page:", newPage);
-
-      return newPage;
-    } catch (error) {
-      console.error("Error adding pages:", error);
-      throw error; // Rethrow the error to be handled by NestJS error handling
-    }
-  }
-
   @Post('/')
   @UseGuards(AuthGuard)
-  async create(@Body() page: CreatePageDto): Promise<any> {
+  async create(@Body() page: CreatePageDto,@Req() { currentUser }: AuthenticatedRequest): Promise<any> {
     try {
-      const newPage = await this.pageService.create(page);
+      const newPage = await this.pageService.create(page,currentUser);
 
       return newPage;
     } catch (error) {
@@ -39,9 +23,9 @@ export class PageController {
 
   @Put('/:id')
   @UseGuards(AuthGuard)
-  async update(@Param('id') id: string, @Body() page: CreatePageDto): Promise<any> {
+  async update(@Param('id') id: string, @Body() page: UpdatePageDto,@Req() { currentUser }: AuthenticatedRequest): Promise<any> {
     try {
-      const updatedPage = await this.pageService.update({ ...page, _id: id });
+      const updatedPage = await this.pageService.update(id,page,currentUser);
 
       return updatedPage;
     } catch (error) {
@@ -51,9 +35,9 @@ export class PageController {
 
   @Get('/:id')
   @UseGuards(AuthGuard)
-  async get(@Param('id') id: string): Promise<any> {
+  async get(@Param('id') id: string,@Req() { currentUser }: AuthenticatedRequest): Promise<any> {
     try {
-      const page = await this.pageService.get(id);
+      const page = await this.pageService.get(id,currentUser);
 
       return page;
     } catch (error) {
@@ -63,12 +47,10 @@ export class PageController {
 
   @Get('/user/:userId')
   @UseGuards(AuthGuard)
-  async pages(@Param('userId') userId: string,@Req() req:Request): Promise<any> {
+  async pages(@Req() req:Request,@Req() { currentUser }: AuthenticatedRequest): Promise<any> {
     try {
-      const currentUser = req['currentUser']; // Access current user from request context
-      console.log('::??currentUser', currentUser)
 
-      const pages = await this.pageService.pages(userId);
+      const pages = await this.pageService.pages(currentUser);
 
 
       console.log("pages", pages)
@@ -79,9 +61,9 @@ export class PageController {
   }
 
   @Put('/trash/:id')
-  async makeTrash(@Param('id') id: string): Promise<any> {
+  async makeTrash(@Param('id') id: string,@Req() { currentUser }: AuthenticatedRequest): Promise<any> {
     try {
-      const page = await this.pageService.makeTrashed(id);
+      const page = await this.pageService.makeTrashed(id,currentUser);
 
       return page;
     } catch (error) {
@@ -90,9 +72,9 @@ export class PageController {
   }
 
   @Put('/recover/:id')
-  async recover(@Param('id') id: string): Promise<any> {
+  async recover(@Param('id') id: string,@Req() { currentUser }: AuthenticatedRequest): Promise<any> {
     try {
-      const page = await this.pageService.recover(id);
+      const page = await this.pageService.recover(id,currentUser);
 
       return page;
     } catch (error) {
@@ -101,9 +83,9 @@ export class PageController {
   }
 
   @Delete('/:id')
-  async delete(@Param('id') id: string): Promise<any> {
+  async delete(@Param('id') id: string,@Req() { currentUser }: AuthenticatedRequest): Promise<any> {
     try {
-      const page = await this.pageService.delete(id);
+      const page = await this.pageService.delete(id,currentUser);
 
       return page;
     } catch (error) {
